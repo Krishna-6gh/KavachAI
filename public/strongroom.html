@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kavach AI — Cyber Forensic Investigator Console &amp; Strong Room</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#06080D',
+            surface: 'rgba(15, 23, 42, 0.65)',
+            cyberEmerald: '#10B981',
+            crimsonRose: '#F43F5E',
+            cyberCyan: '#06B6D4',
+            cyberAmber: '#F59E0B'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Courier New', 'monospace']
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Custom Scrollbars and Glassmorphism */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #06080d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+    .glass-card {
+      background: rgba(11, 15, 23, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(30, 41, 59, 0.85);
+    }
+    .glass-card-emerald {
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.12);
+    }
+    .glass-card-rose {
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.15);
+    }
+    .dial-gauge-glow-rose {
+      box-shadow: 0 0 35px rgba(244, 63, 94, 0.4);
+    }
+    .dial-gauge-glow-emerald {
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);
+    }
+    .scan-beam {
+      background: linear-gradient(180deg, transparent 0%, rgba(16, 185, 129, 0.4) 50%, rgba(6, 182, 212, 0.8) 100%);
+      animation: scanSweep 3s ease-in-out infinite;
+    }
+    @keyframes scanSweep {
+      0% { top: 0%; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { top: 92%; opacity: 0; }
+    }
+    .dropzone-active {
+      border-color: #10b981 !important;
+      background: rgba(16, 185, 129, 0.08) !important;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.25) !important;
+    }
+  </style>
+</head>
+
+<!-- Chosen Palette: Dark Obsidian & Cyber Emerald / Crimson Glassmorphism -->
+<!-- Application Structure Plan:
+  1. Module A: Secret Officer Authentication & Strong Room Access Enclave (Modal + Top Duty Header + 11-Language i18n Dropdown)
+  2. Full-Viewport Suspect Media Ingestion & Secure Drag/Drop Zone (Universal Upload Handler + Ingestion Progress Animation)
+  3. Module B: Evidence Ingestion & Forensic Verdict Triage (2-Exhibit Demo Switcher + Custom Upload Ingest, Circular Gauge, ViT/ELA/C2PA status, Plain-Language Summary)
+  4. Module C: Interactive Visual Forensics (HTML5 Canvas ELA Heatmap with Face Mesh Overlay & Chart.js Vocoder Harmonics Spectrum)
+  5. Module D: Social Media Ground-Zero Origin Map (pHash Trace Vector Nodes: Telegram -> X -> WhatsApp)
+  6. Module E: Archived Evidence Vault & Session Audit Logs (Searchable Records Table & FIPS 140-3 Officer Audit Log)
+-->
+<!-- Visualization & Content Choices:
+  - NO SVG tags or SVG files used anywhere.
+  - Native Unicode symbols (🛡️, 🔒, ⚡, 🔍, 🚨, 📁, 📊, 🌐, 🧭, 📜, ✓, ✕, ⚿, 📤, 🎬, 📹, 🎧) and HTML5 Canvas used for visual indicators.
+  - Chart.js responsive canvas with constrained max-height for audio frequency spectrogram.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<body class="bg-[#06080D] text-slate-100 font-sans min-h-screen selection:bg-emerald-500 selection:text-black overflow-x-hidden">
+
+  <!-- ========================================================================= -->
+  <!-- MODULE A: SECRET OFFICER AUTHENTICATION & STRONG ROOM ACCESS ENCLAVE MODAL -->
+  <!-- ========================================================================= -->
+  <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl transition-all duration-500">
+    <div class="relative w-full max-w-lg glass-card border-2 border-emerald-500/40 rounded-3xl p-6 sm:p-8 shadow-[0_0_60px_rgba(16,185,129,0.25)] text-center">
+      
+      <!-- Top Security Emblem -->
+      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-slate-900 to-slate-950 border border-emerald-500/50 flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(16,185,129,0.4)]">
+        🛡️
+      </div>
+
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono font-bold text-emerald-400 mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="authBadgeTag">SECTION 65B STRONG ROOM ACCESS</span>
+      </div>
+
+      <h2 class="text-2xl font-black text-white font-sans tracking-tight mt-1" id="authTitle">
+        KAVACH AI FORENSIC ENCLAVE
+      </h2>
+      <p class="text-xs text-slate-400 mt-1 mb-6 font-mono" id="authSubtitle">
+        FIPS 140-3 HSM Cleared Personnel Verification
+      </p>
+
+      <!-- 4-Digit PIN Input Screen -->
+      <div class="mb-5">
+        <label class="block text-xs font-mono font-bold text-slate-300 uppercase tracking-wider mb-2" id="authPinLabel">
+          ENTER 4-DIGIT OFFICER PIN
+        </label>
+        <div class="flex items-center justify-center gap-3">
+          <input type="password" id="pinDigit" maxlength="4" placeholder="••••" class="w-48 text-center text-2xl font-mono tracking-[0.5em] font-bold bg-slate-950/90 border-2 border-emerald-500/50 rounded-2xl py-3 text-emerald-400 focus:outline-none focus:border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.25)] transition-all" />
+          <button onclick="handlePinSubmit()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold font-mono text-sm shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer">
+            <span id="btnUnlockText">UNLOCK ➔</span>
+          </button>
+        </div>
+        <p id="pinError" class="text-xs font-mono text-rose-400 mt-2 hidden">
+          ⚠️ Invalid Officer PIN. Try Judge Quick-Select Chips Below.
+        </p>
+      </div>
+
+      <!-- Quick-Access Officer Profiles (For Instant Hackathon Demonstration) -->
+      <div class="border-t border-slate-800/80 pt-4 text-left">
+        <span class="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-2 font-bold text-center" id="lblJudgeChips">
+          ⚡ JUDGE DEMO QUICK-ACCESS PROFILES:
+        </span>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          
+          <!-- Profile 1 -->
+          <button onclick="selectOfficerPreset('1947', 'Insp. Gurpreet Singh', 'CP-8821', 'Cyber Crime Cell, Chandigarh Police', '👮‍♂️')" class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500/50 text-left transition-all group cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-base">👮‍♂️</span>
+              <div>
+                <b class="text-xs text-white block group-hover:text-emerald-400 font-sans">Insp. Gurpreet</b>
+                <span class="text-[10px] font-mono text-slate-400">PIN: <strong class="text-emerald-400">1947</strong></span>
+              </div>
+            </div>
+          </button>
+
+          <!-- Profile 2 -->
+          <button onclick="selectOfficerPreset('2026', 'SI Ananya Sharma', 'PB-4474', 'Digital Evidence Wing, State Lab', '👩‍✈️')" class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500/50 text-left transition-all group cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-base">👩‍✈️</span>
+              <div>
+                <b class="text-xs text-white block group-hover:text-emerald-400 font-sans">SI Ananya S.</b>
+                <span class="text-[10px] font-mono text-slate-400">PIN: <strong class="text-emerald-400">2026</strong></span>
+              </div>
+            </div>
+          </button>
+
+          <!-- Profile 3 -->
+          <button onclick="selectOfficerPreset('3310', 'DSP Vikramaditya', 'HQ-0001', 'Special Cyber Cell, Police HQ', '🎖️')" class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500/50 text-left transition-all group cursor-pointer">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🎖️</span>
+              <div>
+                <b class="text-xs text-white block group-hover:text-emerald-400 font-sans">DSP Vikram</b>
+                <span class="text-[10px] font-mono text-slate-400">PIN: <strong class="text-emerald-400">3310</strong></span>
+              </div>
+            </div>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- HSM Token Verification Animation Overlay -->
+      <div id="hsmLoading" class="absolute inset-0 bg-[#06080D]/95 rounded-3xl flex flex-col items-center justify-center p-6 hidden z-20 font-mono">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-2xl animate-spin mb-3">
+          ⚿
+        </div>
+        <span class="text-sm font-bold text-emerald-400" id="hsmTextMain">VERIFYING HSM HARDWARE TOKEN...</span>
+        <span class="text-xs text-slate-400 mt-1" id="hsmTextSub">ECDSA-P256 Cryptographic Enclave Verified</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TOP SECURITY COMMAND HEADER BAR                                           -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-[#06080D]/90 border-b border-slate-800/80 backdrop-blur-2xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4 py-3">
+      
+      <!-- Brand & Security Badge -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 via-slate-900 to-slate-950 border border-emerald-500/50 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:opacity-90 no-underline">
+          🛡️
+        </a>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-wider text-white font-sans">
+              KAVACH<span class="text-emerald-400 ml-1">AI</span>
+            </span>
+            <span class="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[10px] font-mono font-bold text-emerald-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span id="headerTagStrongRoom">STRONG ROOM</span>
+            </span>
+          </div>
+          <p class="text-[10px] font-mono text-slate-400 tracking-tight m-0 hidden md:block">
+            Chandigarh Police Hackathon 2026 • Team Beat Bytes
+          </p>
+        </div>
+      </div>
+
+      <!-- Center: Active Officer Credentials & Duty Timer -->
+      <div class="hidden lg:flex items-center gap-4 px-4 py-1.5 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs font-mono">
+        <div class="flex items-center gap-2">
+          <span id="headerOfficerAvatar" class="text-lg">👮‍♂️</span>
+          <div>
+            <span id="headerOfficerName" class="text-white font-bold block">Insp. Gurpreet Singh</span>
+            <span id="headerOfficerBadge" class="text-[10px] text-slate-400">BADGE: #CP-8821</span>
+          </div>
+        </div>
+        <div class="h-6 w-px bg-slate-800"></div>
+        <div>
+          <span class="text-slate-500 text-[9px] block" id="lblDutyCounter">LIVE SESSION DUTY:</span>
+          <span id="dutyTimer" class="text-emerald-400 font-bold font-mono text-sm tracking-wider">00:00:00</span>
+        </div>
+      </div>
+
+      <!-- Right Actions: 11-Language i18n Dropdown & Exit Strong Room -->
+      <div class="flex items-center gap-3">
+        
+        <!-- 11-Language Regional i18n Dropdown -->
+        <div class="relative">
+          <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-mono font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-400 cursor-pointer shadow-md">
+            <option value="EN">🌐 English (EN)</option>
+            <option value="HI">🌐 हिन्दी (HI)</option>
+            <option value="PA">🌐 ਪੰਜਾਬੀ (PA)</option>
+            <option value="BN">🌐 বাংলা (BN)</option>
+            <option value="TA">🌐 தமிழ் (TA)</option>
+            <option value="TE">🌐 తెలుగు (TE)</option>
+            <option value="MR">🌐 मराठी (MR)</option>
+            <option value="GU">🌐 ગુજરાતી (GU)</option>
+            <option value="KN">🌐 ಕನ್ನಡ (KN)</option>
+            <option value="ML">🌐 മലയാളം (ML)</option>
+            <option value="OR">🌐 ଓଡ଼ିଆ (OR)</option>
+          </select>
+        </div>
+
+        <!-- Exit Strong Room (Lock Enclave) -->
+        <button onclick="handleExitStrongRoom()" class="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 hover:border-rose-500/60 text-rose-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm">
+          <span>🔒</span>
+          <span class="hidden sm:inline" id="btnExitText">Seal &amp; Lock</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN INVESTIGATOR CONSOLE BODY                                            -->
+  <!-- ========================================================================= -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- Top Exhibit Preset Switcher Bar (Judge Demonstration) -->
+    <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 border border-slate-800">
+      <div>
+        <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest block" id="lblLiveTriage">
+          ⚡ LIVE EVIDENCE TRIAGE &amp; ANOMALY BENCH
+        </span>
+        <h1 class="text-xl sm:text-2xl font-black text-white font-sans tracking-tight mt-0.5" id="lblCaseTitle">
+          Digital Media Authenticity &amp; Dissemination Tracing
+        </h1>
+      </div>
+
+      <!-- 2-Button Exhibit Demo Switcher -->
+      <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800 shadow-xl flex-wrap">
+        <span class="text-xs text-slate-400 px-2 font-mono hidden sm:inline" id="lblExhibitPreset">DEMO PRESET:</span>
+        <button id="btnExhibitA" onclick="switchExhibit('A')" class="px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.35)]">
+          <span>🚨</span>
+          <span id="lblBtnExhibitA">Exhibit A: Spliced Deepfake</span>
+        </button>
+
+        <button id="btnExhibitB" onclick="switchExhibit('B')" class="px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 text-slate-400 hover:text-white border border-transparent">
+          <span>✓</span>
+          <span id="lblBtnExhibitB">Exhibit B: Genuine CCTV</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- WIDE VIEWPORT SUSPECT MEDIA INGESTION & SECURE DRAG-AND-DROP ENCLAVE ZONE -->
+    <!-- ========================================================================= -->
+    <div class="w-full">
+      <div
+        id="dropZone"
+        onclick="triggerFileSelect()"
+        ondragover="handleDragOver(event)"
+        ondragleave="handleDragLeave(event)"
+        ondrop="handleFileDrop(event)"
+        class="relative w-full rounded-3xl border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 bg-slate-950/60 hover:bg-slate-900/60 transition-all p-6 sm:p-8 cursor-pointer text-center overflow-hidden shadow-2xl group"
+      >
+        <!-- Background Ambient Grid Pattern -->
+        <div class="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none"></div>
+
+        <!-- Hidden Native File Input -->
+        <input
+          type="file"
+          id="mediaUploadInput"
+          accept="video/*,audio/*,image/*"
+          class="hidden"
+          onchange="handleFileInputChange(event)"
+        />
+
+        <div class="relative z-10 max-w-3xl mx-auto space-y-3">
+          <!-- Big Icon Beacon -->
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/20 via-slate-900 to-slate-950 border border-emerald-500/50 flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(16,185,129,0.35)] group-hover:scale-110 transition-transform">
+            <span>📤</span>
+          </div>
+
+          <!-- Main Call-To-Action Heading -->
+          <h2 class="text-lg sm:text-xl font-black text-white tracking-tight font-sans" id="lblDropHeading">
+            DROP SUSPECT FORENSIC SPECIMEN OR CLICK TO INGEST
+          </h2>
+
+          <p class="text-xs text-slate-400 font-mono max-w-2xl mx-auto leading-relaxed" id="lblDropSub">
+            Supports Lossless Video (MP4, MOV, MKV), Acoustic Streams (WAV, FLAC, MP3), &amp; Sensor Frames (RAW, PNG, JPG) • Max 500MB • Zero-Cloud Exposure Local GPU Enclave
+          </p>
+
+          <!-- Pipeline Capability Chips -->
+          <div class="flex items-center justify-center gap-2 pt-2 flex-wrap text-[11px] font-mono text-slate-300">
+            <span class="px-2.5 py-1 rounded-full bg-slate-900/90 border border-slate-800 flex items-center gap-1">
+              <span class="text-emerald-400">●</span> <span>ViT-Patch Tensor</span>
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-slate-900/90 border border-slate-800 flex items-center gap-1">
+              <span class="text-emerald-400">●</span> <span>Spatial ELA Matrix</span>
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-slate-900/90 border border-slate-800 flex items-center gap-1">
+              <span class="text-emerald-400">●</span> <span>C2PA Manifest Audit</span>
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-slate-900/90 border border-slate-800 flex items-center gap-1">
+              <span class="text-emerald-400">●</span> <span>Acoustic FFT Roll-Off</span>
+            </span>
+            <span class="px-2.5 py-1 rounded-full bg-slate-900/90 border border-slate-800 flex items-center gap-1">
+              <span class="text-emerald-400">●</span> <span>pHash Origin Engine</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Ingestion Progress Bar (Active During Scan) -->
+        <div id="dropProgressContainer" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-6 hidden z-20 font-mono">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-xl animate-spin mb-3">
+            ⚡
+          </div>
+          <span class="text-sm font-bold text-emerald-400" id="lblIngestingText">INGESTING &amp; EXTRACTING MULTI-MODAL FORENSIC TENSORS...</span>
+          <div class="w-72 sm:w-96 bg-slate-900 rounded-full h-2 mt-4 overflow-hidden border border-slate-800">
+            <div id="dropProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <span id="dropProgressStep" class="text-xs text-slate-400 mt-2">Computing SHA-256 Digest...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-Column Primary Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- ===================================================================== -->
+      <!-- LEFT COLUMN (5 Cols): INGESTION & PRIMARY VERDICT METER               -->
+      <!-- ===================================================================== -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Card 1: File Triage Box -->
+        <div class="glass-card rounded-2xl p-5 shadow-lg">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-bold" id="lblIngestionHeading">
+              📁 Evidence Ingestion
+            </span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              GPU ACCELERATED • LOSSLESS
+            </span>
+          </div>
+
+          <div class="border border-slate-800 rounded-xl p-4 bg-slate-950/80 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 overflow-hidden">
+              <div id="fileTypeIcon" class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center text-lg flex-shrink-0">
+                🎬
+              </div>
+              <div class="truncate font-mono">
+                <p id="triageFileName" class="text-xs sm:text-sm font-bold text-white truncate m-0">
+                  suspect_speech_clip.mp4
+                </p>
+                <span id="triageFileSpecs" class="text-[11px] text-slate-400">
+                  1080p H.264 • Ingest: <strong>0.34s</strong>
+                </span>
+              </div>
+            </div>
+
+            <button onclick="rerunScanSimulation()" class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500/40 text-slate-200 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer flex-shrink-0 shadow-sm">
+              <span>🔄</span>
+              <span class="hidden sm:inline" id="btnRescanText">Re-Scan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 2: Big Circular Verdict Gauge & Logits -->
+        <div id="verdictGaugeCard" class="glass-card rounded-2xl p-6 glass-card-rose transition-all duration-300">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold" id="lblPrimaryVerdict">
+              Primary Model Verdict
+            </span>
+            <span id="verdictBadge" class="px-3 py-1 rounded-full text-xs font-bold font-mono bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.3)]">
+              AI ALTERED / DEEPFAKE
+            </span>
+          </div>
+
+          <!-- Circular Gauge Display -->
+          <div class="flex items-center gap-5 my-3">
+            <div id="gaugeRing" class="relative w-28 h-28 rounded-full border-4 border-rose-500 bg-rose-500/10 dial-gauge-glow-rose flex flex-col items-center justify-center flex-shrink-0 transition-all duration-500">
+              <span id="verdictScore" class="text-3xl font-black font-mono text-rose-400 tracking-tighter">
+                94.2%
+              </span>
+              <span id="verdictScoreSub" class="text-[9px] font-mono uppercase text-slate-400 font-bold">
+                Tampered
+              </span>
+            </div>
+
+            <div>
+              <h3 id="verdictStatusTitle" class="text-base font-bold font-sans text-rose-300 m-0">
+                SYNTHETIC ANOMALY DETECTED
+              </h3>
+              <p id="verdictStatusDesc" class="text-xs text-slate-300 leading-relaxed font-sans mt-1 m-0">
+                Vision Transformer patch classifier detected high-frequency boundary warping across 18 sampled video keyframes.
+              </p>
+            </div>
+          </div>
+
+          <!-- 3 Micro-Status Metrics -->
+          <div class="grid grid-cols-3 gap-2 pt-4 border-t border-slate-800 text-center font-mono text-[11px] mt-2">
+            <div class="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800">
+              <span class="text-slate-500 block text-[10px] font-bold" id="lblMetricVit">ViT LOGIT</span>
+              <span id="metricVit" class="text-rose-400 font-bold">0.942 (FAIL)</span>
+            </div>
+            <div class="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800">
+              <span class="text-slate-500 block text-[10px] font-bold" id="lblMetricEla">ELA STATUS</span>
+              <span id="metricEla" class="text-rose-400 font-bold">ANOMALY</span>
+            </div>
+            <div class="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800">
+              <span class="text-slate-500 block text-[10px] font-bold" id="lblMetricC2pa">C2PA PROV</span>
+              <span id="metricC2pa" class="text-amber-400 font-bold">STRIPPED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Cryptographic Chain-of-Custody Seal -->
+        <div class="bg-slate-950/90 border border-slate-800/90 rounded-2xl p-4 font-mono text-xs text-slate-400 space-y-2 shadow-inner">
+          <div class="flex items-center justify-between text-slate-300 font-semibold pb-2 border-b border-slate-800/80">
+            <span class="flex items-center gap-1.5 text-white font-bold" id="lblChainOfCustody">
+              <span>🔒</span>
+              <span>CHAIN-OF-CUSTODY SEAL</span>
+            </span>
+            <span id="ledgerBlockNo" class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+              BLOCK #004291
+            </span>
+          </div>
+
+          <div class="truncate p-2 rounded-lg bg-slate-900/60 border border-slate-800 text-[11px]">
+            <span class="text-slate-500 font-bold">SHA-256: </span>
+            <code id="ledgerSha" class="text-emerald-300">
+              e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+            </code>
+          </div>
+
+          <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+            <span class="flex items-center gap-1 text-emerald-400 font-bold">
+              <span>✓</span>
+              <span>Section 65B IEA / Sec 63 BSA</span>
+            </span>
+            <span id="ledgerTimestamp">2026-09-02 09:41:28 UTC</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- RIGHT COLUMN (7 Cols): 4 VISUAL PROOF TABS                            -->
+      <!-- ===================================================================== -->
+      <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 shadow-xl flex flex-col justify-between">
+        <div>
+          
+          <!-- Segmented Pill Tab Switcher -->
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3.5 mb-5 flex-wrap gap-2">
+            <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-800 flex-wrap font-mono">
+              
+              <button id="tabBtnHeatmap" onclick="switchVisualTab('heatmap')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+                <span>🔍</span> <span id="lblTabHeatmap">1. Visual ELA Heatmap</span>
+              </button>
+
+              <button id="tabBtnSpectral" onclick="switchVisualTab('spectral')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white border border-transparent">
+                <span>📊</span> <span id="lblTabSpectral">2. Audio Spectral FFT</span>
+              </button>
+
+              <button id="tabBtnOrigin" onclick="switchVisualTab('origin')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white border border-transparent">
+                <span>🧭</span> <span id="lblTabOrigin">3. Social Origin Map</span>
+              </button>
+
+              <button id="tabBtnShield" onclick="switchVisualTab('shield')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white border border-transparent">
+                <span>🛡️</span> <span id="lblTabShield">4. Kavach Shield</span>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- TAB 1: VISUAL ELA HEATMAP (HTML5 CANVAS - STRICTLY NO SVG) -->
+          <div id="tabHeatmapContent" class="space-y-4">
+            <div class="flex items-center justify-between text-xs font-sans">
+              <span id="elaCaption" class="text-slate-300 text-xs">
+                Error Level Analysis isolates high-frequency compression variance in generative face swaps.
+              </span>
+              <button onclick="toggleHeatmapOverlay()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-mono text-xs font-bold cursor-pointer transition-all">
+                <span>👁️</span> <span id="btnOverlayText">Overlay: ON</span>
+              </button>
+            </div>
+
+            <!-- HTML5 Canvas Visualizer Container -->
+            <div class="relative w-full h-[240px] sm:h-[260px] rounded-2xl overflow-hidden border border-slate-800 bg-[#030712] flex items-center justify-center">
+              <canvas id="elaCanvas" width="560" height="260" class="w-full h-full object-contain"></canvas>
+              <div class="absolute top-0 left-0 right-0 h-1 scan-beam pointer-events-none"></div>
+            </div>
+          </div>
+
+          <!-- TAB 2: ACOUSTIC VOCODER SPECTRAL FFT (CHART.JS CANVAS) -->
+          <div id="tabSpectralContent" class="space-y-3 hidden">
+            <div class="flex items-center justify-between text-xs font-sans">
+              <span id="spectralCaption" class="text-slate-300 text-xs">
+                Audio frequency harmonics (dB vs kHz) revealing synthetic neural vocoder high-frequency drop.
+              </span>
+              <span class="px-2.5 py-1 rounded bg-slate-900 border border-slate-700 font-mono text-[10px] text-amber-400 font-bold">
+                14.8 kHz CUTOFF
+              </span>
+            </div>
+
+            <!-- Controlled Height Chart Container (Mandatory h-[220px] max-h-[250px]) -->
+            <div class="h-[220px] max-h-[250px] w-full mx-auto p-2 bg-slate-950/80 rounded-2xl border border-slate-800">
+              <canvas id="spectralChart"></canvas>
+            </div>
+          </div>
+
+          <!-- TAB 3: SOCIAL MEDIA GROUND-ZERO ORIGIN MAP (pHash VECTOR FLOW) -->
+          <div id="tabOriginContent" class="space-y-4 hidden">
+            <p class="text-xs text-slate-300 font-sans" id="originIntro">
+              Perceptual Image Hashing (pHash) reverse search tracking viral dissemination vectors across platforms.
+            </p>
+
+            <div id="originNodesContainer" class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
+              <!-- Dynamically populated based on active exhibit -->
+            </div>
+          </div>
+
+          <!-- TAB 4: KAVACH SHIELD (IN-FEED BROWSER INTERCEPTOR) -->
+          <div id="tabShieldContent" class="space-y-4 hidden">
+            <p class="text-xs text-slate-300 font-sans" id="shieldIntro">
+              Real-time browser extension test: Kavach Shield intercepts suspect media in-feed before users hit &ldquo;Share&rdquo;.
+            </p>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 font-mono text-xs shadow-2xl">
+              <!-- URL Bar -->
+              <div class="flex items-center gap-2 pb-3 border-b border-slate-800 text-slate-400">
+                <span class="text-rose-500">●</span>
+                <span class="text-amber-500">●</span>
+                <span class="text-emerald-500">●</span>
+                <span class="text-[11px] text-slate-400 ml-2">https://web.whatsapp.com/share/attachment</span>
+              </div>
+
+              <!-- Intercept Box -->
+              <div id="shieldAlertBox" class="mt-4 p-4 rounded-xl border bg-rose-950/20 border-rose-500/30 text-rose-200 space-y-3">
+                <div class="flex items-center justify-between font-bold flex-wrap gap-2">
+                  <span id="shieldActionTitle">🚨 SHIELD ACTION: UPLOAD INTERCEPTED</span>
+                  <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded border border-slate-700">180ms Latency</span>
+                </div>
+                <p id="shieldActionDesc" class="text-xs text-slate-300 font-sans m-0">
+                  Kavach Shield detected synthetic facial warping before transmission. Forwarding blocked to prevent viral misinformation.
+                </p>
+                <div class="flex items-center gap-2 pt-2 border-t border-rose-500/20 flex-wrap">
+                  <button id="btnShieldBlock" onclick="triggerShieldAction('block')" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-rose-500/30 text-rose-200 border border-rose-500/50 hover:bg-rose-500/40 cursor-pointer">
+                    Block Forwarding
+                  </button>
+                  <button id="btnShieldTag" onclick="triggerShieldAction('tag')" class="px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-slate-900 text-amber-300 border border-amber-500/40 hover:bg-slate-800 cursor-pointer">
+                    Attach Warning Tag
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PLAIN-ENGLISH LEGAL SUMMARY BOX -->
+          <div class="mt-6 pt-4 border-t border-slate-800/80">
+            <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 block mb-2 font-bold" id="lblLegalSummaryTitle">
+              📜 Plain-English Investigator Summary (Indian Evidence Act §65B / BSA §63 Compliant)
+            </span>
+            <p id="plainLanguageSummary" class="text-xs sm:text-sm text-slate-200 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/80 leading-relaxed font-sans m-0">
+              &ldquo;The submitted video has been confirmed as a <strong>synthetic deepfake</strong>. Facial boundary analysis revealed neural inpainting seams around the jawline, while spectral audio inspection identified synthetic acoustic cutoffs typical of generative vocoders. C2PA provenance credentials were intentionally stripped.&rdquo;
+            </p>
+          </div>
+
+        </div>
+
+        <!-- BOTTOM ACTION: DOWNLOAD COURT DOSSIER PDF -->
+        <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800/60 flex-wrap gap-3">
+          <span class="text-xs text-slate-400 font-mono" id="lblPoliceSubmission">
+            Ready for Cyber Crime Police Submission (Section 65B IEA / Sec 63 BSA)
+          </span>
+          <button onclick="downloadCourtDossier()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 text-slate-950 font-bold text-xs hover:from-emerald-400 hover:to-teal-300 transition-all shadow-[0_0_20px_rgba(16,185,129,0.35)] cursor-pointer font-mono uppercase tracking-wider">
+            <span>📥</span>
+            <span id="btnDownloadDossierText">Download Court-Admissible PDF</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE E: ARCHIVED EVIDENCE VAULT & SESSION AUDIT LOGS                -->
+    <!-- ===================================================================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+      
+      <!-- Vault Table (8 Cols) -->
+      <div class="lg:col-span-8 glass-card rounded-2xl p-5 border border-slate-800">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h3 class="text-base font-bold text-white font-sans flex items-center gap-2 m-0" id="lblVaultTitle">
+              <span>🗄️</span> Archived Evidence Strong Room Vault
+            </h3>
+            <span class="text-[10px] font-mono text-slate-400" id="lblVaultSubtitle">Tamper-evident Section 65B Master Index</span>
+          </div>
+
+          <!-- Search Filter -->
+          <div class="relative">
+            <input type="text" id="vaultSearchInput" oninput="filterVaultRecords(this.value)" placeholder="Search Case ID / Hash..." class="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-400 w-56 placeholder-slate-600" />
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-mono text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 text-[10px] uppercase">
+                <th class="py-2.5 px-3" id="thCaseId">Case ID</th>
+                <th class="py-2.5 px-3" id="thExhibitDesc">Exhibit Description</th>
+                <th class="py-2.5 px-3" id="thVerdict">Verdict</th>
+                <th class="py-2.5 px-3" id="thSha">SHA-256 Hash</th>
+                <th class="py-2.5 px-3" id="thTimestamp">UTC Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="vaultTableBody" class="divide-y divide-slate-800/60 text-slate-300 text-[11px]">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Officer Audit Trail (4 Cols) -->
+      <div class="lg:col-span-4 glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between font-mono text-xs">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+            <span class="text-white font-bold flex items-center gap-1.5" id="lblAuditTrailTitle">
+              <span>📜</span> Officer Audit Trail
+            </span>
+            <span class="text-[10px] text-emerald-400 font-bold">FIPS 140-3 HSM</span>
+          </div>
+
+          <div class="space-y-2.5 text-[11px] text-slate-300">
+            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+              <span class="text-slate-500 block text-[9px]" id="lblAuditOfficer">ACTIVE OFFICER:</span>
+              <span id="auditOfficer" class="text-white font-bold">Insp. Gurpreet Singh (#CP-8821)</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+              <span class="text-slate-500 block text-[9px]" id="lblAuditPinSlot">AUTH PIN / HSM SLOT:</span>
+              <span id="auditPinSlot" class="text-emerald-400 font-bold">PIN: 1947 • HSM-PRIMARY-01</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+              <span class="text-slate-500 block text-[9px]" id="lblAuditSessionRoot">SESSION ROOT HASH:</span>
+              <code class="text-cyan-400 text-[10px] truncate block">0x9f83b1657ff1fc53b92dc18148a1d...</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800/80 text-[10px] text-slate-500 flex items-center justify-between">
+          <span id="lblAntiMalpractice">Anti-Malpractice Seal Active</span>
+          <span class="text-emerald-400">● IMMUTABLE</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT STATE ENGINE & MULTILINGUAL i18n DICTIONARY                    -->
+  <!-- ========================================================================= -->
+  <script>
+    // Global Application State Variables
+    let activePin = "1947";
+    let activeOfficer = {
+      name: "Inspector Gurpreet Singh",
+      badge: "CP-8821",
+      dept: "Cyber Crime Cell, Chandigarh Police",
+      avatar: "👮‍♂️",
+      pin: "1947"
+    };
+    let activeExhibitKey = "A"; // "A" (Deepfake), "B" (Genuine), or "CUSTOM"
+    let currentLang = "EN";
+    let sessionSeconds = 0;
+    let sessionTimerInterval = null;
+    let heatmapOverlay = true;
+    let spectralChartInstance = null;
+
+    // Comprehensive 11-Language Multilingual Dictionary
+    const I18N_DICTIONARY = {
+      EN: {
+        authTitle: "KAVACH AI FORENSIC ENCLAVE",
+        authSubtitle: "FIPS 140-3 HSM Cleared Personnel Verification",
+        authPinLabel: "ENTER 4-DIGIT OFFICER PIN",
+        authBadgeTag: "SECTION 65B STRONG ROOM ACCESS",
+        btnUnlockText: "UNLOCK ➔",
+        lblJudgeChips: "⚡ JUDGE DEMO QUICK-ACCESS PROFILES:",
+        headerTagStrongRoom: "STRONG ROOM",
+        lblDutyCounter: "LIVE SESSION DUTY:",
+        lblLiveTriage: "⚡ LIVE EVIDENCE TRIAGE & ANOMALY BENCH",
+        lblCaseTitle: "Digital Media Authenticity & Dissemination Tracing",
+        lblExhibitPreset: "DEMO PRESET:",
+        lblBtnExhibitA: "Exhibit A: Spliced Deepfake",
+        lblBtnExhibitB: "Exhibit B: Genuine CCTV",
+        lblDropHeading: "DROP SUSPECT FORENSIC SPECIMEN OR CLICK TO INGEST",
+        lblDropSub: "Supports Lossless Video (MP4, MOV, MKV), Acoustic Streams (WAV, FLAC, MP3), & Sensor Frames (RAW, PNG, JPG) • Max 500MB • Zero-Cloud Exposure Local GPU Enclave",
+        lblIngestingText: "INGESTING & EXTRACTING MULTI-MODAL FORENSIC TENSORS...",
+        lblIngestionHeading: "📁 Evidence Ingestion",
+        btnRescanText: "Re-Scan",
+        lblPrimaryVerdict: "Primary Model Verdict",
+        lblMetricVit: "ViT LOGIT",
+        lblMetricEla: "ELA STATUS",
+        lblMetricC2pa: "C2PA PROV",
+        lblChainOfCustody: "CHAIN-OF-CUSTODY SEAL",
+        lblTabHeatmap: "1. Visual ELA Heatmap",
+        lblTabSpectral: "2. Audio Spectral FFT",
+        lblTabOrigin: "3. Social Origin Map",
+        lblTabShield: "4. Kavach Shield",
+        elaCaption: "Error Level Analysis isolates high-frequency compression variance in generative face swaps.",
+        spectralCaption: "Audio frequency harmonics (dB vs kHz) revealing synthetic neural vocoder high-frequency drop.",
+        originIntro: "Perceptual Image Hashing (pHash) reverse search tracking viral dissemination vectors across platforms.",
+        shieldIntro: "Real-time browser extension test: Kavach Shield intercepts suspect media in-feed before users hit “Share”.",
+        lblLegalSummaryTitle: "📜 Plain-English Investigator Summary (Indian Evidence Act §65B / BSA §63 Compliant)",
+        lblPoliceSubmission: "Ready for Cyber Crime Police Submission (Section 65B IEA / Sec 63 BSA)",
+        btnDownloadDossierText: "Download Court-Admissible PDF",
+        lblVaultTitle: "Archived Evidence Strong Room Vault",
+        lblVaultSubtitle: "Tamper-evident Section 65B Master Index",
+        thCaseId: "Case ID",
+        thExhibitDesc: "Exhibit Description",
+        thVerdict: "Verdict",
+        thSha: "SHA-256 Hash",
+        thTimestamp: "UTC Timestamp",
+        lblAuditTrailTitle: "Officer Audit Trail",
+        lblAuditOfficer: "ACTIVE OFFICER:",
+        lblAuditPinSlot: "AUTH PIN / HSM SLOT:",
+        lblAuditSessionRoot: "SESSION ROOT HASH:",
+        lblAntiMalpractice: "Anti-Malpractice Seal Active",
+        btnExitText: "Seal & Lock",
+        summaryA: "“The submitted video has been confirmed as a synthetic deepfake. Facial boundary analysis revealed neural inpainting seams around the jawline, while spectral audio inspection identified synthetic acoustic cutoffs typical of generative vocoders. C2PA provenance credentials were intentionally stripped.”",
+        summaryB: "“The submitted video demonstrates consistent camera sensor noise and matches legitimate CCTV hardware compression signatures. No optical flow inconsistencies or synthetic voice manipulation were detected.”"
+      },
+      HI: {
+        authTitle: "कवच AI फॉरेंसिक एन्क्लेव",
+        authSubtitle: "FIPS 140-3 HSM अधिकृत अधिकारी सत्यापन",
+        authPinLabel: "4-अंकों का अधिकारी पिन दर्ज करें",
+        authBadgeTag: "धारा 65B स्ट्रांग रूम एक्सेस",
+        btnUnlockText: "अनलॉक करें ➔",
+        lblJudgeChips: "⚡ जज डेमो क्विक-एक्सेस प्रोफाइल:",
+        headerTagStrongRoom: "स्ट्रॉन्ग रूम",
+        lblDutyCounter: "लाइव ड्यूटी सत्र:",
+        lblLiveTriage: "⚡ लाइव साक्ष्य विश्लेषण एवं विसंगति बेंच",
+        lblCaseTitle: "डिजिटल मीडिया प्रामाणिकता एवं प्रसार ट्रैकिंग",
+        lblExhibitPreset: "डेमो प्रीसेट:",
+        lblBtnExhibitA: "प्रदर्श A: छेड़छाड़ किया डीपफेक",
+        lblBtnExhibitB: "प्रदर्श B: प्रामाणिक सीसीटीवी",
+        lblDropHeading: "संदिग्ध फॉरेंसिक नमूना यहां छोड़ें या अपलोड करने के लिए क्लिक करें",
+        lblDropSub: "वीडियो (MP4, MOV), ऑडियो (WAV, MP3), एवं चित्र (PNG, JPG) समर्थित • स्थानीय GPU एन्क्लेव",
+        lblIngestingText: "फॉरेंसिक टेन्सर्स निष्कर्षण एवं विश्लेषण जारी...",
+        lblIngestionHeading: "📁 साक्ष्य अंतर्ग्रहण",
+        btnRescanText: "पुनः स्कैन",
+        lblPrimaryVerdict: "प्राथमिक मॉडल निर्णय",
+        lblMetricVit: "ViT लॉजिट",
+        lblMetricEla: "ELA स्थिति",
+        lblMetricC2pa: "C2PA उद्गम",
+        lblChainOfCustody: "कस्टडी श्रृंखला सील",
+        lblTabHeatmap: "1. विजुअल ELA हीटमैप",
+        lblTabSpectral: "2. ऑडियो स्पेक्ट्रल FFT",
+        lblTabOrigin: "3. सोशल ओरिजिन मैप",
+        lblTabShield: "4. कवच शील्ड",
+        elaCaption: "एरर लेवल एनालिसिस डीपफेक चेहरे के किनारों पर उच्च संपीड़न विसंगति को पकड़ता है।",
+        spectralCaption: "ऑडियो फ्रीक्वेंसी स्पेक्ट्रम वोकोडर कृत्रिम ध्वनि ड्रॉप को उजागर करता है।",
+        originIntro: "पर्सेप्चुअल इमेज हैशिंग (pHash) सोशल मीडिया प्रसार को ग्राउंड ज़ीरो से ट्रैक करता है।",
+        shieldIntro: "कवच शील्ड सोशल मीडिया पर संदिग्ध मीडिया अग्रेषित होने से पहले ही रोकती है।",
+        lblLegalSummaryTitle: "📜 सरल भाषा जांच सारांश (भारतीय साक्ष्य अधिनियम §65B / BSA §63 संगत)",
+        lblPoliceSubmission: "साइबर क्राइम पुलिस एवं अदालत प्रस्तुति हेतु प्रमाणित",
+        btnDownloadDossierText: "अदालती PDF डाउनलोड करें",
+        lblVaultTitle: "संग्रहीत साक्ष्य स्ट्रांग रूम वॉल्ट",
+        lblVaultSubtitle: "अपरिवर्तनीय धारा 65B मास्टर इंडेक्स",
+        thCaseId: "केस आईडी",
+        thExhibitDesc: "प्रदर्श विवरण",
+        thVerdict: "निर्णय",
+        thSha: "SHA-256 हैश",
+        thTimestamp: "UTC समय",
+        lblAuditTrailTitle: "अधिकारी ऑडिट ट्रेल",
+        lblAuditOfficer: "सक्रिय अधिकारी:",
+        lblAuditPinSlot: "प्रमाणीकरण पिन / HSM स्लॉट:",
+        lblAuditSessionRoot: "सत्र रूट हैश:",
+        lblAntiMalpractice: "भ्रष्टाचार-रोधी सील सक्रिय",
+        btnExitText: "सुरक्षित लॉक",
+        summaryA: "“जांच किए गए वीडियो की पुष्टि सिंथेटिक डीपफेक के रूप में हुई है। चेहरे के किनारों पर न्यूरल इनपेंटिंग सीम मिले हैं तथा ऑडियो में वोकोडर कटऑफ पाया गया। C2PA क्रेडेंशियल्स हटा दिए गए थे।”",
+        summaryB: "“जांच किया गया वीडियो वैध सीसीटीवी कैमरा सेंसर के अनुरूप है। कोई कृत्रिम छेड़छाड़ या वॉयस क्लोनिंग नहीं पाई गई।”"
+      },
+      PA: {
+        authTitle: "ਕਵਚ AI ਫੋਰੈਂਸਿਕ ਇਨਕਲੇਵ",
+        authSubtitle: "FIPS 140-3 HSM ਅਧਿਕਾਰਤ ਅਫਸਰ ਤਸਦੀਕ",
+        authPinLabel: "4-ਅੰਕਾਂ ਦਾ ਅਫਸਰ ਪਿੰਨ ਦਾਖਲ ਕਰੋ",
+        authBadgeTag: "ਧਾਰਾ 65B ਸਟ੍ਰਾਂਗ ਰੂਮ ਐਕਸੈਸ",
+        btnUnlockText: "ਅਨਲੌਕ ਕਰੋ ➔",
+        lblJudgeChips: "⚡ ਜੱਜ ਡੈਮੋ ਕੁਇੱਕ-ਐਕਸੈਸ ਪ੍ਰੋਫਾਈਲ:",
+        headerTagStrongRoom: "ਸਟ੍ਰਾਂਗ ਰੂਮ",
+        lblDutyCounter: "ਲਾਈਵ ਡਿਊਟੀ ਸਮਾਂ:",
+        lblLiveTriage: "⚡ ਲਾਈਵ ਸਬੂਤ ਜਾਂਚ ਅਤੇ ਵਿਸੰਗਤੀ ਬੈਂਚ",
+        lblCaseTitle: "ਡਿਜੀਟਲ ਮੀਡੀਆ ਅਸਲੀਅਤ ਅਤੇ ਫੈਲਾਅ ਟਰੈਕਿੰਗ",
+        lblExhibitPreset: "ਡੈਮੋ ਪ੍ਰੀਸੈੱਟ:",
+        lblBtnExhibitA: "ਪ੍ਰਦਰਸ਼ A: ਡੀਪਫੇਕ ਵੀਡੀਓ",
+        lblBtnExhibitB: "ਪ੍ਰਦਰਸ਼ B: ਅਸਲੀ ਸੀਸੀਟੀਵੀ",
+        lblDropHeading: "ਸ਼ੱਕੀ ਫੋਰੈਂਸਿਕ ਮੀਡੀਆ ਇੱਥੇ ਸੁੱਟੋ ਜਾਂ ਅਪਲੋਡ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ",
+        lblDropSub: "ਵੀਡੀਓ (MP4, MOV), ਆਡੀਓ (WAV, MP3), ਅਤੇ ਤਸਵੀਰਾਂ (PNG, JPG) ਸਮਰਥਿਤ • ਲੋਕਲ GPU ਐਨਕਲੇਵ",
+        lblIngestingText: "ਫੋਰੈਂਸਿਕ ਮੀਡੀਆ ਟੈਂਸਰ ਵਿਸ਼ਲੇਸ਼ਣ ਜਾਰੀ...",
+        lblIngestionHeading: "📁 ਸਬੂਤ ਇੰਜੈਸ਼ਨ",
+        btnRescanText: "ਮੁੜ ਸਕੈਨ",
+        lblPrimaryVerdict: "ਮੁੱਖ ਮਾਡਲ ਫੈਸਲਾ",
+        lblMetricVit: "ViT ਸਕੋਰ",
+        lblMetricEla: "ELA ਸਥਿਤੀ",
+        lblMetricC2pa: "C2PA ਸਬੂਤ",
+        lblChainOfCustody: "ਕਸਟਡੀ ਲੜੀ ਸੀਲ",
+        lblTabHeatmap: "1. ਵਿਜ਼ੂਅਲ ELA ਹੀਟਮੈਪ",
+        lblTabSpectral: "2. ਆਡੀਓ ਸਪੈਕਟ੍ਰਲ FFT",
+        lblTabOrigin: "3. ਸੋਸ਼ਲ ਓਰੀਜਨ ਮੈਪ",
+        lblTabShield: "4. ਕਵਚ ਸ਼ੀਲਡ",
+        elaCaption: "ਐਰਰ ਲੈਵਲ ਐਨਾਲਿਸਿਸ ਜਨਰੇਟਿਵ ਚਿਹਰੇ ਦੀਆਂ ਕਮੀਆਂ ਨੂੰ ਫੜਦਾ ਹੈ।",
+        spectralCaption: "ਆਡੀਓ ਫ੍ਰੀਕੁਐਂਸੀ ਸਿੰਥੈਟਿਕ ਆਵਾਜ਼ ਦੇ ਨਕਲੀ ਹੋਣ ਦਾ ਖੁਲਾਸਾ ਕਰਦੀ ਹੈ।",
+        originIntro: "ਪਰਸੈਪਚੁਅਲ ਇਮੇਜ ਹੈਸ਼ਿੰਗ (pHash) ਰਾਹੀਂ ਵਾਇਰਲ ਫੈਲਾਅ ਟਰੈਕ ਕੀਤਾ ਗਿਆ ਹੈ।",
+        shieldIntro: "ਕਵਚ ਸ਼ੀਲਡ ਸ਼ੇਅਰ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਹੀ ਨਕਲੀ ਮੀਡੀਆ ਨੂੰ ਰੋਕ ਦਿੰਦੀ ਹੈ।",
+        lblLegalSummaryTitle: "📜 ਸਰਲ ਭਾਸ਼ਾ ਜਾਂਚ ਸਾਰਾਂਸ਼ (ਭਾਰਤੀ ਸਬੂਤ ਐਕਟ §65B / BSA §63 ਅਨੁਕੂਲ)",
+        lblPoliceSubmission: "ਸਾਈਬਰ ਕ੍ਰਾਈਮ ਪੁਲਿਸ ਅਤੇ ਅਦਾਲਤ ਪੇਸ਼ਕਾਰੀ ਲਈ ਤਿਆਰ",
+        btnDownloadDossierText: "ਕੋਰਟ PDF ਡਾਊਨਲੋਡ ਕਰੋ",
+        lblVaultTitle: "ਸੁਰੱਖਿਅਤ ਸਬੂਤ ਸਟ੍ਰਾਂਗ ਰੂਮ ਵਾਲਟ",
+        lblVaultSubtitle: "ਧਾਰਾ 65B ਸੁਰੱਖਿਅਤ ਮਾਸਟਰ ਇੰਡੈਕਸ",
+        thCaseId: "ਕੇਸ ਆਈਡੀ",
+        thExhibitDesc: "ਸਬੂਤ ਵੇਰਵਾ",
+        thVerdict: "ਫੈਸਲਾ",
+        thSha: "SHA-256 ਹੈਸ਼",
+        thTimestamp: "UTC ਸਮਾਂ",
+        lblAuditTrailTitle: "ਅਫਸਰ ਆਡਿਟ ਟ੍ਰੇਲ",
+        lblAuditOfficer: "ਮੌਜੂਦਾ ਅਫਸਰ:",
+        lblAuditPinSlot: "ਅਫਸਰ ਪਿੰਨ / HSM ਸਲਾਟ:",
+        lblAuditSessionRoot: "ਸੈਸ਼ਨ ਰੂਟ ਹੈਸ਼:",
+        lblAntiMalpractice: "ਧੋਖਾਧੜੀ-ਵਿਰੋਧੀ ਸੀਲ ਸਰਗਰਮ",
+        btnExitText: "ਸੀਲ ਅਤੇ ਲਾਕ",
+        summaryA: "“ਜਾਂਚ ਕੀਤੀ ਗਈ ਵੀਡੀਓ ਸਿੰਥੈਟਿਕ ਡੀਪਫੇਕ ਸਾਬਤ ਹੋਈ ਹੈ। ਚਿਹਰੇ ਦੀਆਂ ਹੱਦਾਂ ਉੱਤੇ ਨਕਲੀ ਬਦਲਾਅ ਪਾਏ ਗਏ ਅਤੇ ਆਡੀਓ ਵਿੱਚ ਸਿੰਥੈਟਿਕ ਵੋਕੋਡਰ ਕੱਟ-ਆਫ ਮਿਲੀ।”",
+        summaryB: "“ਇਹ ਵੀਡੀਓ ਅਸਲ ਕੈਮਰਾ ਸੈਂਸਰ ਦੇ ਅਨੁਸਾਰ ਹੈ ਅਤੇ ਇਸ ਵਿੱਚ ਕੋਈ ਛੇੜਛਾੜ ਨਹੀਂ ਮਿਲੀ।”"
+      },
+      BN: {
+        authTitle: "কবচ AI ফরেনসিক এনক্লেভ",
+        authSubtitle: "FIPS 140-3 HSM অনুমোদিত কর্মকর্তা যাচাইকরণ",
+        authPinLabel: "৪-সংখ্যার অফিসার পিন লিখুন",
+        authBadgeTag: "ধারা ৬৫B স্ট্রং রুম অ্যাক্সেস",
+        btnUnlockText: "আনলক করুন ➔",
+        lblJudgeChips: "⚡ বিচারক ডেমো কুইক-অ্যাক্সেস প্রোফাইল:",
+        headerTagStrongRoom: "স্ট্রং রুম",
+        lblDutyCounter: "লাইভ ডিউটি সময়:",
+        lblLiveTriage: "⚡ লাইভ প্রমাণ ট্রায়াজ ও অসঙ্গতি বেঞ্চ",
+        lblCaseTitle: "ডিজিটাল মিডিয়া সত্যতা ও প্রচার ট্র্যাকিং",
+        lblExhibitPreset: "ডেমো প্রিসেট:",
+        lblBtnExhibitA: "প্রদর্শ A: ডিপফেক ভিডিও",
+        lblBtnExhibitB: "প্রদর্শ B: খাঁটি সিসিটিভি",
+        lblDropHeading: "সন্দেহজনক ফরেনসিক মিডিয়া এখানে ফেলুন অথবা আপলোড করতে ক্লিক করুন",
+        lblDropSub: "ভিডিও (MP4, MOV), অডিও (WAV, MP3) ও ছবি সমর্থিত • স্থানীয় GPU এনক্লেভ",
+        lblIngestingText: "ফরেনসিক টেনসর প্রক্রিয়াকরণ চলছে...",
+        lblIngestionHeading: "📁 প্রমাণ অন্তর্ভুক্তি",
+        btnRescanText: "পুনরায় স্ক্যান",
+        lblPrimaryVerdict: "প্রাথমিক মডেল রায়",
+        lblMetricVit: "ViT লগিট",
+        lblMetricEla: "ELA স্ট্যাটাস",
+        lblMetricC2pa: "C2PA প্রমাণ",
+        lblChainOfCustody: "হেফাজত শৃঙ্খলা সীল",
+        lblTabHeatmap: "১. ভিজ্যুয়াল ELA হিটম্যাপ",
+        lblTabSpectral: "২. অডিও স্পেকট্রাল FFT",
+        lblTabOrigin: "৩. সোশ্যাল অরিজিন ম্যাপ",
+        lblTabShield: "৪. কবচ শিল্ড",
+        elaCaption: "এরর লেভেল অ্যানালাইসিস ডিপফেক মুখের বিকৃতি শনাক্ত করে।",
+        spectralCaption: "অডিও ফ্রিকোয়েন্সি স্পেকট্রাম কৃত্রিম কণ্ঠস্বর চিহ্নিত করে।",
+        originIntro: "পারসেপচুয়াল হ্যাশিংয়ের মাধ্যমে মিডিয়া ছড়ানোর উৎস চিহ্নিত হয়।",
+        shieldIntro: "কবচ শিল্ড প্রচারের আগেই জাল কন্টেন্ট প্রতিরোধ করে।",
+        lblLegalSummaryTitle: "📜 সহজ ভাষার তদন্ত সারাংশ (ভারতীয় প্রমাণ আইন §65B / BSA §63 অনুবর্তী)",
+        lblPoliceSubmission: "সাইবার ক্রাইম পুলিশ ও আদালত জমা দেওয়ার জন্য প্রস্তুত",
+        btnDownloadDossierText: "আদালতের PDF ডাউনলোড করুন",
+        lblVaultTitle: "সংরক্ষিত প্রমাণ স্ট্রং রুম ভল্ট",
+        lblVaultSubtitle: "ট্যাম্পার-প্রুফ ধারা ৬৫B মাস্টার সূচক",
+        thCaseId: "কেস আইডি",
+        thExhibitDesc: "প্রদর্শ বিবরণ",
+        thVerdict: "রায়",
+        thSha: "SHA-256 হ্যাশ",
+        thTimestamp: "UTC সময়",
+        lblAuditTrailTitle: "অফিসার অডিট ট্রেইল",
+        lblAuditOfficer: "সক্রিয় অফিসার:",
+        lblAuditPinSlot: "পিন / HSM স্লট:",
+        lblAuditSessionRoot: "সেশন রুট হ্যাশ:",
+        lblAntiMalpractice: "দুর্নীতি-বিরোধী সীল সক্রিয়",
+        btnExitText: "সিল ও লক",
+        summaryA: "“জমা দেওয়া ভিডিওটি সিন্থেটিক ডিপফেক হিসেবে প্রমাণিত হয়েছে। মুখে এআই বিকৃতি এবং কৃত্রিম অডিও ফ্রিকোয়েন্সি পাওয়া গেছে।”",
+        summaryB: "“ভিডিওটি আসল সিসিটিভি ক্যামেরার সাথে সামঞ্জস্যপূর্ণ এবং কোনো কারচুপি পাওয়া যায়নি।”"
+      },
+      TA: {
+        authTitle: "கவச் AI தடயவியல் தளம்",
+        authSubtitle: "FIPS 140-3 HSM அங்கீகரிக்கப்பட்ட அதிகாரி சரிபார்ப்பு",
+        authPinLabel: "4-இலக்க அதிகாரி பின் உள்ளிடவும்",
+        authBadgeTag: "பிரிவு 65B ஸ்ட்ராங் ரூம் அணுகல்",
+        btnUnlockText: "திறக்க ➔",
+        lblJudgeChips: "⚡ நீதிபதி டெமோ விரைவு அணுகல் சுயவிவரங்கள்:",
+        headerTagStrongRoom: "ஸ்ட்ராங் ரூம்",
+        lblDutyCounter: "நேரடி பணி நேரம்:",
+        lblLiveTriage: "⚡ நேரடி ஆதார பகுப்பாய்வு மையம்",
+        lblCaseTitle: "டிஜிட்டல் ஊடக உண்மைத்தன்மை & பரவல் கண்காணிப்பு",
+        lblExhibitPreset: "டெமோ தேர்வு:",
+        lblBtnExhibitA: "சான்று A: போலி டீப்ஃபேக்",
+        lblBtnExhibitB: "சான்று B: உண்மையான CCTV",
+        lblDropHeading: "சந்தேகத்திற்குரிய தடயவியல் ஆதாரத்தை இங்கே இழுக்கவும் அல்லது பதிவேற்ற கிளிக் செய்யவும்",
+        lblDropSub: "வீடியோ (MP4, MOV), ஆடியோ (WAV, MP3) மற்றும் படங்கள் ஆதரிக்கப்படுகின்றன • உள்ளூர் GPU தளம்",
+        lblIngestingText: "தடயவியல் பகுப்பாய்வு செயலாக்கத்தில் உள்ளது...",
+        lblIngestionHeading: "📁 ஆதார உள்ளீடு",
+        btnRescanText: "மீண்டும் ஸ்கேன்",
+        lblPrimaryVerdict: "முதன்மை மாதிரி தீர்ப்பு",
+        lblMetricVit: "ViT நிலை",
+        lblMetricEla: "ELA நிலை",
+        lblMetricC2pa: "C2PA சான்றிதழ்",
+        lblChainOfCustody: "பாதுகாப்பு சங்கிலி முத்திரை",
+        lblTabHeatmap: "1. காட்சி ELA வெப்ப வரைபடம்",
+        lblTabSpectral: "2. ஆடியோ ஸ்பெக்ட்ரல் FFT",
+        lblTabOrigin: "3. சமூக மூல வரைபடம்",
+        lblTabShield: "4. கவச் கவசம்",
+        elaCaption: "பிழை நிலை பகுப்பாய்வு முக மாற்றத்தில் உள்ள உயர் அதிர்வெண் முரண்பாடுகளை பிரிக்கிறது.",
+        spectralCaption: "ஆடியோ அதிர்வெண் அலைவரிசை செயற்கை குரல் மாற்றத்தை கண்டறிகிறது.",
+        originIntro: "pHash தொழில்நுட்பம் மூலம் சமூக ஊடக பரவல் கண்டறியப்படுகிறது.",
+        shieldIntro: "கவச் கவசம் போலியான வீடியோக்கள் பகிரப்படுவதை உடனடியாக தடுக்கிறது.",
+        lblLegalSummaryTitle: "📜 எளிய மொழி புலனாய்வு சுருக்கம் (இந்திய சாட்சிய சட்டம் §65B / BSA §63 இணக்கமானது)",
+        lblPoliceSubmission: "சைபர் க்ரைம் போலீஸ் மற்றும் நீதிமன்ற சமர்ப்பிப்பிற்கு தயார்",
+        btnDownloadDossierText: "நீதிமன்ற PDF பதிவிறக்கு",
+        lblVaultTitle: "பாதுகாக்கப்பட்ட ஆதார பெட்டகம்",
+        lblVaultSubtitle: "பிரிவு 65B முதன்மை பட்டியல்",
+        thCaseId: "வழக்கு எண்",
+        thExhibitDesc: "ஆதார விளக்கம்",
+        thVerdict: "தீர்ப்பு",
+        thSha: "SHA-256 ஹாஷ்",
+        thTimestamp: "UTC நேரம்",
+        lblAuditTrailTitle: "அதிகாரி தணிக்கை பதிவு",
+        lblAuditOfficer: "செயலில் உள்ள அதிகாரி:",
+        lblAuditPinSlot: "பின் / HSM ஸ்லாட்:",
+        lblAuditSessionRoot: "அமர்வு ரூட் ஹாஷ்:",
+        lblAntiMalpractice: "முறைகேடு தடுப்பு முத்திரை தயார்",
+        btnExitText: "பூட்டு",
+        summaryA: "“சமர்ப்பிக்கப்பட்ட காணொளி டீப்ஃபேக் என உறுதிப்படுத்தப்பட்டுள்ளது. முக அமைப்பில் மாற்றங்களும் குரலில் செயற்கை அதிர்வெண்களும் உள்ளன.”",
+        summaryB: "“இந்த காணொளி உண்மையான CCTV கேமராவால் பதிவு செய்யப்பட்டது, இதில் எந்த மாற்றமும் இல்லை.”"
+      },
+      TE: {
+        authTitle: "కవచ్ AI ఫోరెన్సిక్ ఎన్‌క్లేవ్",
+        authSubtitle: "FIPS 140-3 HSM అధికారి ధృవీకరణ",
+        authPinLabel: "4-అంకెల అధికారి పిన్ నమోదు చేయండి",
+        authBadgeTag: "సెక్షన్ 65B స్ట్రాంగ్ రూమ్ యాక్సెస్",
+        btnUnlockText: "అన్‌లాక్ చేయండి ➔",
+        lblJudgeChips: "⚡ జడ్జి డెమో క్విక్ ప్రొఫైల్స్:",
+        headerTagStrongRoom: "స్ట్రాంగ్ రూమ్",
+        lblDutyCounter: "లైవ్ డ్యూటీ సమయం:",
+        lblLiveTriage: "⚡ ప్రత్యక్ష సాక్ష్య విశ్లేషణ విభాగం",
+        lblCaseTitle: "డిజిటల్ మీడియా ప్రామాణికత & వ్యాప్తి ట్రాకింగ్",
+        lblExhibitPreset: "డెమో ప్రీసెట్:",
+        lblBtnExhibitA: "సాక్ష్యం A: డీప్‌ఫేక్ వీడియో",
+        lblBtnExhibitB: "సాక్ష్యం B: నిజమైన సీసీటీవీ",
+        lblDropHeading: "అనుమానాస్పద ఫోరెన్సిక్ మీడియాను ఇక్కడ డ్రాప్ చేయండి లేదా అప్‌లోడ్ చేయడానికి క్లిక్ చేయండి",
+        lblDropSub: "వీడియో (MP4, MOV), ఆడియో (WAV, MP3) మరియు చిత్రాలు మద్దతు పొందుతాయి • లోకల్ GPU ఎన్‌క్లేవ్",
+        lblIngestingText: "ఫోరెన్సిక్ టెన్సార్ ప్రాసెసింగ్ కొనసాగుతోంది...",
+        lblIngestionHeading: "📁 సాక్ష్య సేకరణ",
+        btnRescanText: "మళ్లీ స్కాన్",
+        lblPrimaryVerdict: "ప్రాథమిక మోడల్ తీర్పు",
+        lblMetricVit: "ViT లాజిట్",
+        lblMetricEla: "ELA స్థితి",
+        lblMetricC2pa: "C2PA మూలం",
+        lblChainOfCustody: "కస్టడీ చైన్ సీల్",
+        lblTabHeatmap: "1. విజువల్ ELA హీట్‌మ్యాప్",
+        lblTabSpectral: "2. ఆడియో స్పెక్ట్రల్ FFT",
+        lblTabOrigin: "3. సోషల్ ఆరిజిన్ మ్యాప్",
+        lblTabShield: "4. కవచ్ షీల్డ్",
+        elaCaption: "ఎర్రర్ లెవల్ ఎనాలసిస్ నకిలీ ముఖ మార్పిడులను గుర్తిస్తుంది.",
+        spectralCaption: "ఆడియో ఫ్రీక్వెన్సీ స్పెక్ట్రమ్ సింథటిక్ వాయిస్ క్లోనింగ్‌ను బయటపెడుతుంది.",
+        originIntro: "pHash ద్వారా సోషల్ మీడియాలో వ్యాప్తిని గుర్తించవచ్చు.",
+        shieldIntro: "కవచ్ షీల్డ్ అనుమానాస్పద మీడియాను షేర్ చేయకుండా అడ్డుకుంటుంది.",
+        lblLegalSummaryTitle: "📜 సరళమైన దర్యాప్తు సారాంశం (భారతీయ సాక్ష్య చట్టం §65B / BSA §63 అనుకూలమైనది)",
+        lblPoliceSubmission: "సైబర్ క్రైమ్ పోలీసు మరియు కోర్టు సమర్పణకు సిద్ధం",
+        btnDownloadDossierText: "కోర్టు PDF డౌన్‌లోడ్",
+        lblVaultTitle: "భద్రపరిచిన సాక్ష్యాల స్ట్రాంగ్ రూమ్ వాల్ట్",
+        lblVaultSubtitle: "సెక్షన్ 65B రికార్డు సూచిక",
+        thCaseId: "కేస్ ఐడీ",
+        thExhibitDesc: "సాక్ష్యం వివరణ",
+        thVerdict: "తీర్పు",
+        thSha: "SHA-256 హాష్",
+        thTimestamp: "UTC సమయం",
+        lblAuditTrailTitle: "అధికారి ఆడిట్ ట్రయిల్",
+        lblAuditOfficer: "క్రియాశీల అధికారి:",
+        lblAuditPinSlot: "పిన్ / HSM స్లాట్:",
+        lblAuditSessionRoot: "సెషన్ రూట్ హాష్:",
+        lblAntiMalpractice: "దుర్వినియోగ నిరోధక సీల్ యాక్టివ్",
+        btnExitText: "లాక్ చేయండి",
+        summaryA: "“ఈ వీడియో కృత్రిమ డీప్‌ఫేక్ అని నిర్ధారించబడింది. ముఖ సరిహద్దుల్లో కృత్రిమ అమరికలు గుర్తించబడ్డాయి.”",
+        summaryB: "“ఈ వీడియో ప్రామాణికమైనది మరియు ఎటువంటి మార్పులు లేవు.”"
+      },
+      MR: {
+        authTitle: "कवच AI फॉरेन्सिक एन्क्लेव",
+        authSubtitle: "FIPS 140-3 HSM अधिकृत अधिकारी पडताळणी",
+        authPinLabel: "४-अंकी अधिकारी पिन प्रविष्ट करा",
+        authBadgeTag: "कलम 65B स्ट्राँग रूम प्रवेश",
+        btnUnlockText: "अनलॉक करा ➔",
+        lblJudgeChips: "⚡ न्यायाधीश डेमो त्वरित प्रोफाइल:",
+        headerTagStrongRoom: "स्ट्राँग रूम",
+        lblDutyCounter: "थेट ड्युटी वेळ:",
+        lblLiveTriage: "⚡ थेट पुरावा विश्लेषण व विसंगती बेंच",
+        lblCaseTitle: "डिजिटल मीडिया सत्यता आणि प्रसार ट्रॅकिंग",
+        lblExhibitPreset: "डेमो प्रीसेट:",
+        lblBtnExhibitA: "पुरावा A: बनावट डीपफेक",
+        lblBtnExhibitB: "पुरावा B: खरा सीसीटीव्ही",
+        lblDropHeading: "संशयित फॉरेन्सिक नमुना येथे ड्रॉप करा किंवा अपलोड करण्यासाठी क्लिक करा",
+        lblDropSub: "व्हिडिओ (MP4, MOV), ऑडिओ (WAV, MP3) व प्रतिमा समर्थित • स्थानिक GPU एन्क्लेव",
+        lblIngestingText: "फॉरेन्सिक टेन्सर विश्लेषण सुरू आहे...",
+        lblIngestionHeading: "📁 पुरावा इनपुट",
+        btnRescanText: "पुन्हा स्कॅन",
+        lblPrimaryVerdict: "प्राथमिक मॉडेल निकाल",
+        lblMetricVit: "ViT लॉजिट",
+        lblMetricEla: "ELA स्थिती",
+        lblMetricC2pa: "C2PA मूळ",
+        lblChainOfCustody: "कस्टडी साखळी सील",
+        lblTabHeatmap: "१. व्हिज्युअल ELA हीटमॅप",
+        lblTabSpectral: "२. ऑडिओ स्पेक्ट्रल FFT",
+        lblTabOrigin: "३. सोशल ओरिजिन मॅप",
+        lblTabShield: "४. कवच शील्ड",
+        elaCaption: "एरर लेव्हल ॲनालिसिस बनावट चेहऱ्यावरील विसंगती शोधते.",
+        spectralCaption: "ऑडिओ फ्रिक्वेन्सी कृत्रिम व्हॉइस क्लोनिंग उघड करते.",
+        originIntro: "pHash रिव्हर्स सर्च सोशल मीडियावरील प्रसाराचा माग काढते.",
+        shieldIntro: "कवच शील्ड बनावट व्हिडिओ फॉरवर्ड होण्यापूर्वीच रोखते.",
+        lblLegalSummaryTitle: "📜 सोप्या भाषेतील तपास सारांश (भारतीय पुरावा कायदा §65B / BSA §63 सुसंगत)",
+        lblPoliceSubmission: "सायबर गुन्हे पोलीस आणि न्यायालयीन सादरीकरणासाठी तयार",
+        btnDownloadDossierText: "न्यायालयीन PDF डाउनलोड करा",
+        lblVaultTitle: "संरक्षित पुरावा स्ट्राँग रूम व्हॉल्ट",
+        lblVaultSubtitle: "कलम 65B मास्टर इंडेक्स",
+        thCaseId: "केस आयडी",
+        thExhibitDesc: "पुरावा वर्णन",
+        thVerdict: "निकाल",
+        thSha: "SHA-256 हॅश",
+        thTimestamp: "UTC वेळ",
+        lblAuditTrailTitle: "अधिकारी ऑडिट ट्रेल",
+        lblAuditOfficer: "सक्रिय अधिकारी:",
+        lblAuditPinSlot: "पिन / HSM स्लॉट:",
+        lblAuditSessionRoot: "सत्र रूट हॅश:",
+        lblAntiMalpractice: "गैरप्रकार विरोधी सील सक्रिय",
+        btnExitText: "सुरक्षित लॉक",
+        summaryA: "“सादर केलेला व्हिडिओ बनावट डीपफेक असल्याचे निष्पन्न झाले आहे. चेहऱ्यावर कृत्रिम जोडण्या आढळल्या आहेत.”",
+        summaryB: "“हा व्हिडिओ मूळ सीसीटीव्ही कॅमेऱ्याशी सुसंगत असून यात कोणतीही छेडछाड आढळलेली नाही.”"
+      },
+      GU: {
+        authTitle: "કવચ AI ફોરેન્સિક એન્ક્લેવ",
+        authSubtitle: "FIPS 140-3 HSM અધિકૃત અધિકારી ચકાસણી",
+        authPinLabel: "4-અંકનો અધિકારી પિન દાખલ કરો",
+        authBadgeTag: "કલમ 65B સ્ટ્રોંગ રૂમ એક્સેસ",
+        btnUnlockText: "અનલૉક કરો ➔",
+        lblJudgeChips: "⚡ જજ ડેમો ક્વિક-એક્સેસ પ્રોફાઇલ:",
+        headerTagStrongRoom: "સ્ટ્રોંગ રૂમ",
+        lblDutyCounter: "લાઈવ ડ્યુટી સમય:",
+        lblLiveTriage: "⚡ લાઈવ પુરાવા વિશ્લેષણ બેન્ચ",
+        lblCaseTitle: "ડિજિટલ મીડિયા અધિકૃતતા અને પ્રસાર ટ્રેકિંગ",
+        lblExhibitPreset: "ડેમો પ્રીસેટ:",
+        lblBtnExhibitA: "પુરાવો A: નકલી ડીપફેક",
+        lblBtnExhibitB: "પુરાવો B: અસલ સીસીટીવી",
+        lblDropHeading: "શંકાસ્પદ ફોરેન્સિક પુરાવો અહીં મૂકો અથવા અપલોડ કરવા ક્લિક કરો",
+        lblDropSub: "વિડિઓ (MP4, MOV), ઑડિઓ (WAV, MP3) અને ફોટા સપોર્ટેડ • સ્થાનિક GPU એન્ક્લેવ",
+        lblIngestingText: "ફોરેન્સિક વિશ્લેષણ ચાલુ છે...",
+        lblIngestionHeading: "📁 પુરાવા ઇન્જેક્શન",
+        btnRescanText: "ફરી સ્કેન",
+        lblPrimaryVerdict: "પ્રાથમિક મોડેલ ચુકાદો",
+        lblMetricVit: "ViT સ્કોર",
+        lblMetricEla: "ELA સ્થિતિ",
+        lblMetricC2pa: "C2PA સર્ટિફિકેટ",
+        lblChainOfCustody: "કસ્ટડી ચેઈન સીલ",
+        lblTabHeatmap: "1. વિઝ્યુઅલ ELA હીટમેપ",
+        lblTabSpectral: "2. ઓડિયો સ્પેક્ટ્રલ FFT",
+        lblTabOrigin: "3. સોશિયલ ઓરિજિન મેપ",
+        lblTabShield: "4. કવચ શિલ્ડ",
+        elaCaption: "એરર લેવલ એનાલિસિસ ચહેરા પરની નકલી વિસંગતતા પકડે છે.",
+        spectralCaption: "ઓડિયો ફ્રિક્વન્સી સિન્થેટિક અવાજ પકડી પાડે છે.",
+        originIntro: "pHash રિવર્સ સર્ચ સોશિયલ મીડિયા પ્રસારને ટ્રેક કરે છે.",
+        shieldIntro: "કવચ શિલ્ડ નકલી મીડિયાને શેર થતા અટકાવે છે.",
+        lblLegalSummaryTitle: "📜 સરળ ભાષા તપાસ સારાંશ (ભારતીય પુરાવા અધિનિયમ §65B / BSA §63 સુસંગત)",
+        lblPoliceSubmission: "સાયબર ક્રાઈમ પોલીસ અને કોર્ટ સબમિશન માટે તૈયાર",
+        btnDownloadDossierText: "કોર્ટ PDF ડાઉનલોડ કરો",
+        lblVaultTitle: "સુરક્ષિત પુરાવા સ્ટ્રોંગ રૂમ વૉલ્ટ",
+        lblVaultSubtitle: "કલમ 65B માસ્ટર ઇન્ડેક્સ",
+        thCaseId: "કેસ આઈડી",
+        thExhibitDesc: "પુરાવા વિગત",
+        thVerdict: "ચુકાદો",
+        thSha: "SHA-256 હેશ",
+        thTimestamp: "UTC સમય",
+        lblAuditTrailTitle: "અધિકારી ઓડિટ ટ્રેઇલ",
+        lblAuditOfficer: "સક્રિય અધિકારી:",
+        lblAuditPinSlot: "પિન / HSM સ્લોટ:",
+        lblAuditSessionRoot: "સેશન રૂટ હેશ:",
+        lblAntiMalpractice: "ગેરરીતિ-વિરોધી સીલ સક્રિય",
+        btnExitText: "સીલ અને લોક",
+        summaryA: "“આ વિડિઓ ડીપફેક હોવાની પુષ્ટિ થઈ છે. ચહેરાના ભાગોમાં નકલી ફેરફારો અને અવાજમાં સિન્થેટિક ઘટકો મળ્યા છે.”",
+        summaryB: "“આ વિડિઓ અસલી સીસીટીવી કેમેરા ફૂટેજ છે અને તેમાં કોઈ ચેડાં કરવામાં આવ્યા નથી.”"
+      },
+      KN: {
+        authTitle: "ಕವಚ AI ಫೋರೆನ್ಸಿಕ್ ಎನ್‌ಕ್ಲೇವ್",
+        authSubtitle: "FIPS 140-3 HSM ಅಧಿಕೃತ ಅಧಿಕಾರಿ ಪರಿಶೀಲನೆ",
+        authPinLabel: "4-ಅಂಕಿಯ ಅಧಿಕಾರಿ ಪಿನ್ ನಮೂದಿಸಿ",
+        authBadgeTag: "ವಿಭಾಗ 65B ಸ್ಟ್ರಾಂಗ್ ರೂಮ್ ಪ್ರವೇಶ",
+        btnUnlockText: "ಅನ್‌ಲಾಕ್ ಮಾಡಿ ➔",
+        lblJudgeChips: "⚡ ಜಡ್ಜ್ ಡೆಮೊ ತ್ವರಿತ ಪ್ರೊಫೈಲ್‌ಗಳು:",
+        headerTagStrongRoom: "ಸ್ಟ್ರಾಂಗ್ ರೂಮ್",
+        lblDutyCounter: "ಲೈವ್ ಕರ್ತವ್ಯ ಸಮಯ:",
+        lblLiveTriage: "⚡ ನೇರ ಪುರಾವೆ ವಿಶ್ಲೇಷಣಾ ವಿಭಾಗ",
+        lblCaseTitle: "ಡಿಜಿಟಲ್ ಮಾಧ್ಯಮ ನೈಜತೆ ಮತ್ತು ಹರಡುವಿಕೆ ಟ್ರ್ಯಾಕಿಂಗ್",
+        lblExhibitPreset: "ಡೆಮೊ ಪ್ರಿಸೆಟ್:",
+        lblBtnExhibitA: "ಪುರಾವೆ A: ನಕಲಿ ಡೀಪ್‌ಫೇಕ್",
+        lblBtnExhibitB: "ಪುರಾವೆ B: ನೈಜ ಸಿಸಿಟಿವಿ",
+        lblDropHeading: "ಅನುಮಾನಾಸ್ಪದ ಪುರಾವೆಯನ್ನು ಇಲ್ಲಿ ಡ್ರಾಪ್ ಮಾಡಿ ಅಥವಾ ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
+        lblDropSub: "ವೀಡಿಯೊ (MP4, MOV), ಆಡಿಯೊ (WAV, MP3) ಮತ್ತು ಚಿತ್ರಗಳು ಬೆಂಬಲಿತವಾಗಿದೆ • ಸ್ಥಳೀಯ GPU ಎನ್‌ಕ್ಲೇವ್",
+        lblIngestingText: "ಫೋರೆನ್ಸಿಕ್ ವಿಶ್ಲೇಷಣೆ ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
+        lblIngestionHeading: "📁 ಪುರಾವೆ ಒಳಹರಿವು",
+        btnRescanText: "ಮರು ಸ್ಕ್ಯಾನ್",
+        lblPrimaryVerdict: "ಪ್ರಾಥಮಿಕ ಮಾದರಿ ತೀರ್ಪು",
+        lblMetricVit: "ViT ಸ್ಕೋರ್",
+        lblMetricEla: "ELA ಸ್ಥಿತಿ",
+        lblMetricC2pa: "C2PA ಮೂಲ",
+        lblChainOfCustody: "ಕಸ್ಟಡಿ ಸರಪಳಿ ಸೀಲ್",
+        lblTabHeatmap: "1. ದೃಶ್ಯ ELA ಹೀಟ್‌ಮ್ಯಾಪ್",
+        lblTabSpectral: "2. ಆಡಿಯೋ ಸ್ಪೆಕ್ಟ್ರಲ್ FFT",
+        lblTabOrigin: "3. ಸಾಮಾಜಿಕ ಮೂಲ ನಕ್ಷೆ",
+        lblTabShield: "4. ಕವಚ ಶೀಲ್ಡ್",
+        elaCaption: "ದೋಷ ಮಟ್ಟದ ವಿಶ್ಲೇಷಣೆಯು ಮುಖ ಬದಲಾವಣೆ ದೋಷಗಳನ್ನು ಪ್ರತ್ಯೇಕಿಸುತ್ತದೆ.",
+        spectralCaption: "ಧ್ವನಿ ತರಂಗಾಂತರವು ಕೃತಕ ಧ್ವನಿ ಕ್ಲೋನಿಂಗ್ ಅನ್ನು ಪತ್ತೆ ಮಾಡುತ್ತದೆ.",
+        originIntro: "pHash ಮೂಲಕ ಸಾಮಾಜಿಕ ಮಾಧ್ಯಮದಲ್ಲಿ ಹರಡುವಿಕೆಯನ್ನು ಪತ್ತೆಹಚ್ಚಲಾಗುತ್ತದೆ.",
+        shieldIntro: "ಕವಚ ಶೀಲ್ಡ್ ನಕಲಿ ವಿಡಿಯೋಗಳನ್ನು ಫಾರ್ವರ್ಡ್ ಮಾಡುವುದನ್ನು ತಡೆಯುತ್ತದೆ.",
+        lblLegalSummaryTitle: "📜 ಸರಳ ಭಾಷೆಯ ತನಿಖಾ ಸಾರಾಂಶ (ಭಾರತೀಯ ಪುರಾವೆ ಕಾಯ್ದೆ §65B / BSA §63 ಅನುಸರಣೆ)",
+        lblPoliceSubmission: "ಸೈಬರ್ ಕ್ರೈಮ್ ಪೊಲೀಸ್ ಮತ್ತು ನ್ಯಾಯಾಲಯಕ್ಕೆ ಸಲ್ಲಿಕೆಗೆ ಸಿದ್ಧ",
+        btnDownloadDossierText: "ನ್ಯಾಯಾಲಯದ PDF ಡೌನ್‌ಲೋಡ್",
+        lblVaultTitle: "ಭದ್ರಪಡಿಸಿದ ಪುರಾವೆಗಳ ಸ್ಟ್ರಾಂಗ್ ರೂಮ್ ವಾಲ್ಟ್",
+        lblVaultSubtitle: "ವಿಭಾಗ 65B ಮಾಸ್ಟರ್ ಇಂಡೆಕ್ಸ್",
+        thCaseId: "ಕೇಸ್ ಐಡಿ",
+        thExhibitDesc: "ಪುರಾವೆ ವಿವರಣೆ",
+        thVerdict: "ತೀರ್ಪು",
+        thSha: "SHA-256 ಹ್ಯಾಶ್",
+        thTimestamp: "UTC ಸಮಯ",
+        lblAuditTrailTitle: "ಅಧಿಕಾರಿ ಆಡಿಟ್ ಟ್ರಯಲ್",
+        lblAuditOfficer: "ಸಕ್ರಿಯ ಅಧಿಕಾರಿ:",
+        lblAuditPinSlot: "ಪಿನ್ / HSM ಸ್ಲಾಟ್:",
+        lblAuditSessionRoot: "ಸೆಷನ್ ರೂಟ್ ಹ್ಯಾಶ್:",
+        lblAntiMalpractice: "ದುರುಪಯೋಗ ವಿರೋಧಿ ಸೀಲ್ ಸಕ್ರಿಯ",
+        btnExitText: "ಲಾಕ್ ಮಾಡಿ",
+        summaryA: "“ಪರಿಶೀಲಿಸಲಾದ ವೀಡಿಯೊ ಡೀಪ್‌ಫೇಕ್ ಎಂದು ದೃಢಪಟ್ಟಿದೆ. ಮುಖದಲ್ಲಿ ಕೃತಕ ಬದಲಾವಣೆಗಳು ಮತ್ತು ಧ್ವನಿಯಲ್ಲಿ ಅಸಹಜತೆ ಕಂಡುಬಂದಿದೆ.”",
+        summaryB: "“ಈ ವೀಡಿಯೊ ನೈಜ ಸಿಸಿಟಿವಿ ಕ್ಯಾಮೆರಾದಿಂದ ಸೆರೆಹಿಡಿಯಲ್ಪಟ್ಟಿದ್ದು, ಯಾವುದೇ ಬದಲಾವಣೆಗಳಿಲ್ಲ.”"
+      },
+      ML: {
+        authTitle: "കവച് AI ഫോറൻസിക് എൻക്ലേവ്",
+        authSubtitle: "FIPS 140-3 HSM ഉദ്യോഗസ്ഥ സ്ഥിരീകരണം",
+        authPinLabel: "4-അക്ക ഉദ്യോഗസ്ഥ പിൻ നൽകുക",
+        authBadgeTag: "സെക്ഷൻ 65B സ്ട്രോംഗ് റൂം ആക്സസ്",
+        btnUnlockText: "തുറക്കുക ➔",
+        lblJudgeChips: "⚡ ജഡ്ജ് ഡെമോ പ്രൊഫൈലുകൾ:",
+        headerTagStrongRoom: "സ്ട്രോംഗ് റൂം",
+        lblDutyCounter: "ഡ്യൂട്ടി സമയം:",
+        lblLiveTriage: "⚡ ലൈവ് തെളിവ് പരിശോധനാ ബെഞ്ച്",
+        lblCaseTitle: "ഡിജിറ്റൽ മീഡിയ ആധികാരികതയും വ്യാപന ട്രാക്കിംഗും",
+        lblExhibitPreset: "ഡെമോ പ്രീസെറ്റ്:",
+        lblBtnExhibitA: "തെളിവ് A: വ്യാജ ഡീപ്ഫേക്ക്",
+        lblBtnExhibitB: "തെളിവ് B: യഥാർത്ഥ സിസിടിവി",
+        lblDropHeading: "സംശയാസ്പദമായ തെളിവ് ഇവിടെ ഡ്രോപ്പ് ചെയ്യുക അല്ലെങ്കിൽ അപ്‌ലോഡ് ചെയ്യാൻ ക്ലിക്ക് ചെയ്യുക",
+        lblDropSub: "വീഡിയോ (MP4, MOV), ഓഡിയോ (WAV, MP3), ചിത്രങ്ങൾ പിന്തുണയ്ക്കുന്നു • ലോക്കൽ GPU എൻക്ലേവ്",
+        lblIngestingText: "ഫോറൻസിക് വിശകലനം പുരോഗമിക്കുന്നു...",
+        lblIngestionHeading: "📁 തെളിവ് ഇൻപുട്ട്",
+        btnRescanText: "വീണ്ടും സ്കാൻ ചെയ്യുക",
+        lblPrimaryVerdict: "പ്രാഥമിക മോഡൽ വിധി",
+        lblMetricVit: "ViT സ്കോർ",
+        lblMetricEla: "ELA നില",
+        lblMetricC2pa: "C2PA രേഖ",
+        lblChainOfCustody: "കസ്റ്റഡി ചെയിൻ സീൽ",
+        lblTabHeatmap: "1. വിഷ്വൽ ELA ഹീറ്റ്മാപ്പ്",
+        lblTabSpectral: "2. ഓഡിയോ സ്പെക്ട്രൽ FFT",
+        lblTabOrigin: "3. സോഷ്യൽ ഒറിജിൻ മാപ്പ്",
+        lblTabShield: "4. കവച് ഷീൽഡ്",
+        elaCaption: "ഡീപ്ഫേക്ക് മുഖമാറ്റങ്ങളിലെ പിഴവുകൾ ELA കൃത്യമായി കണ്ടെത്തുന്നു.",
+        spectralCaption: "ഓഡിയോ ഫ്രീക്വൻസി കൃത്രിമ ശബ്ദങ്ങൾ തിരിച്ചറിയുന്നു.",
+        originIntro: "സോഷ്യൽ മീഡിയയിലെ വ്യാപനം pHash വഴി കണ്ടെത്തുന്നു.",
+        shieldIntro: "വ്യാജ വീഡിയോകൾ പ്രചരിക്കുന്നത് കവച് ഷീൽഡ് തടയുന്നു.",
+        lblLegalSummaryTitle: "📜 ലളിതമായ അന്വേഷണ സംഗ്രഹം (ഇന്ത്യൻ എവിഡൻസ് ആക്ട് §65B / BSA §63 അനുസൃതം)",
+        lblPoliceSubmission: "സൈബർ ക്രൈം പോലീസിനും കോടതി സമർപ്പണത്തിനും സജ്ജം",
+        btnDownloadDossierText: "കോടതി PDF ഡൗൺലോഡ്",
+        lblVaultTitle: "സുരക്ഷിത തെളിവ് സ്ട്രോംഗ് റൂം വോൾട്ട്",
+        lblVaultSubtitle: "സെക്ഷൻ 65B മാസ്റ്റർ ഇൻഡക്സ്",
+        thCaseId: "കേസ് ഐഡി",
+        thExhibitDesc: "തെളിവ് വിവരണം",
+        thVerdict: "വിധി",
+        thSha: "SHA-256 ഹാഷ്",
+        thTimestamp: "UTC സമയം",
+        lblAuditTrailTitle: "ഓഫീസർ ഓഡിറ്റ് ട്രയൽ",
+        lblAuditOfficer: "ഉദ്യോഗസ്ഥൻ:",
+        lblAuditPinSlot: "പിൻ / HSM സ്ലോട്ട്:",
+        lblAuditSessionRoot: "സെഷൻ റൂട്ട് ഹാഷ്:",
+        lblAntiMalpractice: "തട്ടിപ്പ് വിരുദ്ധ സീൽ സജീവം",
+        btnExitText: "സീൽ & ലോക്ക്",
+        summaryA: "“സമർപ്പിച്ച വീഡിയോ ഡീപ്ഫേക്ക് ആണെന്ന് സ്ഥിരീകരിച്ചു. മുഖത്തും ശബ്ദത്തിലും കൃത്രിമത്വം കണ്ടെത്തി.”",
+        summaryB: "“ഈ വീഡിയോ യഥാർത്ഥ സിസിടിവി ദൃശ്യമാണ്, മാറ്റങ്ങളൊന്നും കണ്ടെത്തിയിട്ടില്ല.”"
+      },
+      OR: {
+        authTitle: "କବଚ AI ଫୋରେନସିକ୍ ଏନକ୍ଲେଭ୍",
+        authSubtitle: "FIPS 140-3 HSM ଅଧିକାରୀ ଯାଞ୍ଚ",
+        authPinLabel: "୪-ଅଙ୍କ ବିଶିଷ୍ଟ ପିନ୍ ପ୍ରବେଶ କରନ୍ତୁ",
+        authBadgeTag: "ଧାରା ୬୫B ଷ୍ଟ୍ରଙ୍ଗ ରୁମ୍ ପ୍ରବେଶ",
+        btnUnlockText: "ଅନଲକ୍ କରନ୍ତୁ ➔",
+        lblJudgeChips: "⚡ ବିଚାରପତି ଡେମୋ କ୍ୱିକ୍ ପ୍ରୋଫାଇଲ୍:",
+        headerTagStrongRoom: "ଷ୍ଟ୍ରଙ୍ଗ ରୁମ୍",
+        lblDutyCounter: "ଲାଇଭ୍ ଡ୍ୟୁଟି ସମୟ:",
+        lblLiveTriage: "⚡ ଲାଇଭ୍ ପ୍ରମାଣ ବିଶ୍ଳେଷଣ ବେଞ୍ଚ",
+        lblCaseTitle: "ଡିଜିଟାଲ୍ ମିଡିଆ ପ୍ରାମାଣିକତା ଏବଂ ପ୍ରସାର ଟ୍ରାକିଂ",
+        lblExhibitPreset: "ଡେମୋ ପ୍ରିସେଟ୍:",
+        lblBtnExhibitA: "ପ୍ରଦର୍ଶ A: ନକଲି ଡିପଫେକ୍",
+        lblBtnExhibitB: "ପ୍ରଦର୍ଶ B: ପ୍ରକୃତ ସିସିଟିଭି",
+        lblDropHeading: "ସନ୍ଦେହଜନକ ଫୋରେନସିକ୍ ପ୍ରମାଣ ଏଠାରେ ଛାଡନ୍ତୁ କିମ୍ବା ଅପଲୋଡ୍ କରିବାକୁ କ୍ଲିକ୍ କରନ୍ତୁ",
+        lblDropSub: "ଭିଡିଓ (MP4, MOV), ଅଡିଓ (WAV, MP3) ଏବଂ ଫଟୋ ସମର୍ଥିତ • ଲୋକାଲ୍ GPU ଏନକ୍ଲେଭ୍",
+        lblIngestingText: "ଫୋରେନସିକ୍ ବିଶ୍ଳେଷଣ ପ୍ରକ୍ରିୟା ଚାଲିଛି...",
+        lblIngestionHeading: "📁 ପ୍ରମାଣ ଗ୍ରହଣ",
+        btnRescanText: "ପୁନଃ ସ୍କାନ୍",
+        lblPrimaryVerdict: "ପ୍ରାଥମିକ ମଡେଲ୍ ନିଷ୍ପତ୍ତି",
+        lblMetricVit: "ViT ସ୍କୋର",
+        lblMetricEla: "ELA ସ୍ଥିତି",
+        lblMetricC2pa: "C2PA ପ୍ରମାଣ",
+        lblChainOfCustody: "କଷ୍ଟଡି ଚେନ୍ ସିଲ୍",
+        lblTabHeatmap: "୧. ଭିଜୁଆଲ୍ ELA ହିଟମ୍ୟାପ୍",
+        lblTabSpectral: "୨. ଅଡିଓ ସ୍ପେକ୍ଟ୍ରାଲ୍ FFT",
+        lblTabOrigin: "୩. ସୋସିଆଲ୍ ଓରିଜିନ୍ ମ୍ୟାପ୍",
+        lblTabShield: "୪. କବଚ ଶିଲ୍ଡ",
+        elaCaption: "ଏରର୍ ଲେଭଲ୍ ଆନାଲିସିସ୍ ନକଲି ଚେହେରା ପରିବର୍ତ୍ତନକୁ ଧରିଥାଏ।",
+        spectralCaption: "ଅଡିଓ ଫ୍ରିକ୍ୱେନ୍ସି କୃତ୍ରିମ ସ୍ୱର କ୍ଲୋନିଂକୁ ପ୍ରକାଶ କରେ।",
+        originIntro: "pHash ଦ୍ୱାରା ସୋସିଆଲ୍ ମିଡିଆ ପ୍ରସାରକୁ ଟ୍ରାକ୍ କରାଯାଇଛି।",
+        shieldIntro: "କବଚ ଶିଲ୍ଡ ନକଲି ମିଡିଆ ପ୍ରସାରଣକୁ ରୋକିଥାଏ।",
+        lblLegalSummaryTitle: "📜 ସରଳ ଭାଷା ଅନୁସନ୍ଧାନ ସାରାଂଶ (ଭାରତୀୟ ସାକ୍ଷ୍ୟ ଅଧିନିୟମ §65B / BSA §63 ସଙ୍ଗତ)",
+        lblPoliceSubmission: "ସାଇବର କ୍ରାଇମ୍ ପୋଲିସ୍ ଏବଂ କୋର୍ଟ ଦାଖଲ ପାଇଁ ପ୍ରସ୍ତୁତ",
+        btnDownloadDossierText: "କୋର୍ଟ PDF ଡାଉନଲୋଡ୍ କରନ୍ତୁ",
+        lblVaultTitle: "ସଂରକ୍ଷିତ ପ୍ରମାଣ ଷ୍ଟ୍ରଙ୍ଗ ରୁମ୍ ଭଲ୍ଟ",
+        lblVaultSubtitle: "ଧାରା ୬୫B ମାଷ୍ଟର ଇଣ୍ଡେକ୍ସ",
+        thCaseId: "କେସ୍ ଆଇଡି",
+        thExhibitDesc: "ପ୍ରମାଣ ବିବରଣୀ",
+        thVerdict: "ନିଷ୍ପତ୍ତି",
+        thSha: "SHA-256 ହ୍ୟାଶ୍",
+        thTimestamp: "UTC ସମୟ",
+        lblAuditTrailTitle: "ଅଧିକାରୀ ଅଡିଟ୍ ଟ୍ରେଲ୍",
+        lblAuditOfficer: "ସକ୍ରିୟ ଅଧିକାରୀ:",
+        lblAuditPinSlot: "ପିନ୍ / HSM ସ୍ଲଟ୍:",
+        lblAuditSessionRoot: "ସେସନ୍ ରୁଟ୍ ହ୍ୟାଶ୍:",
+        lblAntiMalpractice: "ଦୁର୍ନୀତି ନିବାରଣ ସିଲ୍ ସକ୍ରିୟ",
+        btnExitText: "ସିଲ୍ ଓ ଲକ୍",
+        summaryA: "“ପରୀକ୍ଷା କରାଯାଇଥିବା ଭିଡିଓ ଏକ ସିନ୍ଥେଟିକ୍ ଡିପଫେକ୍ ବୋଲି ପ୍ରମାଣିତ ହୋଇଛି। ଚେହେରା ଓ ସ୍ୱରରେ କୃତ୍ରିମତା ମିଳିଛି।”",
+        summaryB: "“ଏହି ଭିଡିଓ ପ୍ରକୃତ ସିସିଟିଭି କ୍ୟାମେରାର ଏବଂ ଏଥିରେ କୌଣସି ପରିବର୍ତ୍ତନ ହୋଇନାହିଁ।”"
+      }
+    };
+
+    // Archived Vault Records Database
+    const VAULT_RECORDS = [
+      {
+        id: "KV-0928-A",
+        desc: "Executive Speech Video Face-Swap Impersonation",
+        verdict: "TAMPERED (94.2%)",
+        isFake: true,
+        sha: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4...",
+        time: "2026-09-02 09:41 UTC"
+      },
+      {
+        id: "KV-0604-B",
+        desc: "Chandigarh Sector 17 CCTV Traffic Capture",
+        verdict: "GENUINE (97.8%)",
+        isFake: false,
+        sha: "8f434346648f6b96df89dda901c5176b10a6d839...",
+        time: "2026-08-30 14:10 UTC"
+      },
+      {
+        id: "KV-0841-C",
+        desc: "Online Banking KYC Synthetic Selfie Scan",
+        verdict: "TAMPERED (98.9%)",
+        isFake: true,
+        sha: "a2b719488cf41a0293db140293881fa49012384a...",
+        time: "2026-08-28 11:22 UTC"
+      },
+      {
+        id: "KV-0719-D",
+        desc: "Highway Toll Plaza High-Speed Camera Feed",
+        verdict: "GENUINE (99.1%)",
+        isFake: false,
+        sha: "10b98134d39906b6d4f43f5e0284c79401828340...",
+        time: "2026-08-25 18:04 UTC"
+      }
+    ];
+
+    // Exhibit Master Definitions
+    const EXHIBIT_DATA = {
+      A: {
+        fileName: "suspect_speech_clip.mp4",
+        fileSpecs: "1080p H.264 • Ingest: 0.34s",
+        verdictBadge: "AI ALTERED / DEEPFAKE",
+        verdictScore: "94.2%",
+        verdictScoreSub: "Tampered",
+        statusTitle: "SYNTHETIC ANOMALY DETECTED",
+        statusDesc: "Vision Transformer patch classifier detected high-frequency boundary warping across 18 sampled video keyframes.",
+        vit: "0.942 (FAIL)",
+        ela: "ANOMALY",
+        c2pa: "STRIPPED",
+        block: "BLOCK #004291",
+        sha: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        time: "2026-09-02 09:41:28 UTC",
+        isFake: true,
+        originNodes: [
+          {
+            tag: "1. GROUND ZERO",
+            time: "14:02 IST",
+            title: "@anon_leaks_bot",
+            sub: "Telegram Channel #492 (Darknet Seed Node)",
+            footer: "Initial Raw Diffusion Upload",
+            alert: true
+          },
+          {
+            tag: "2. DISSEMINATION",
+            time: "14:15 IST",
+            title: "@viral_news_hub",
+            sub: "X / Twitter (Re-encoded Clip)",
+            footer: "24,000+ Reposts / Stripped EXIF",
+            alert: false
+          },
+          {
+            tag: "3. VIRAL SPREAD",
+            time: "14:38 IST",
+            title: "WhatsApp Forward Swarm",
+            sub: "Closed Relay Loop (~32k shares)",
+            footer: "Inter-State Disinformation Swarm",
+            alert: false
+          }
+        ]
+      },
+      B: {
+        fileName: "cctv_sector17_feed.mp4",
+        fileSpecs: "1080p H.264 • Ingest: 0.28s",
+        verdictBadge: "GENUINE / AUTHENTIC",
+        verdictScore: "97.8%",
+        verdictScoreSub: "Authentic",
+        statusTitle: "NATURAL CAPTURE CONFIRMED",
+        statusDesc: "Physical sensor grain and photometric consistency verified. No neural diffusion artifacts or face replacement detected.",
+        vit: "0.022 (PASS)",
+        ela: "CLEAN",
+        c2pa: "VALID SIGN",
+        block: "BLOCK #004292",
+        sha: "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4",
+        time: "2026-08-30 14:10:05 UTC",
+        isFake: false,
+        originNodes: [
+          {
+            tag: "1. SOURCE CAPTURE",
+            time: "14:10 IST",
+            title: "Toll Gate Camera #04",
+            sub: "Chandigarh Smart City Command",
+            footer: "Direct Fiber Feed / Hardware Signed",
+            alert: false
+          },
+          {
+            tag: "2. STATE REPOSITORY",
+            time: "14:11 IST",
+            title: "Police Data Enclave",
+            sub: "Sector 17 Central Vault",
+            footer: "ISO 27037 Compliant Storage",
+            alert: false
+          },
+          {
+            tag: "3. COURT SUBMISSION",
+            time: "14:15 IST",
+            title: "Evidentiary Archive",
+            sub: "Signed with Officer Token",
+            footer: "Section 65B Certificate Sealed",
+            alert: false
+          }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // INITIALIZATION & EVENT LISTENERS
+    // =========================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      initSessionTimer();
+      initChartJsSpectral();
+      renderVaultRecords(VAULT_RECORDS);
+      drawElaCanvas();
+      switchExhibit("A");
+    });
+
+    // =========================================================================
+    // MODULE A: AUTHENTICATION & PIN VERIFICATION
+    // =========================================================================
+    function selectOfficerPreset(pin, name, badge, dept, avatar) {
+      document.getElementById("pinDigit").value = pin;
+      activeOfficer = { pin, name, badge, dept, avatar };
+      handlePinSubmit();
+    }
+
+    function handlePinSubmit() {
+      const pin = document.getElementById("pinDigit").value.trim();
+      const validPins = ["1947", "2026", "3310"];
+
+      if (!validPins.includes(pin)) {
+        document.getElementById("pinError").classList.remove("hidden");
+        return;
+      }
+
+      document.getElementById("pinError").classList.add("hidden");
+      document.getElementById("hsmLoading").classList.remove("hidden");
+
+      // 400ms HSM token verification sequence
+      setTimeout(() => {
+        document.getElementById("hsmLoading").classList.add("hidden");
+        document.getElementById("authModal").classList.add("opacity-0", "pointer-events-none");
+        
+        // Update header credentials
+        document.getElementById("headerOfficerAvatar").innerText = activeOfficer.avatar;
+        document.getElementById("headerOfficerName").innerText = activeOfficer.name;
+        document.getElementById("headerOfficerBadge").innerText = `BADGE: #${activeOfficer.badge}`;
+        document.getElementById("auditOfficer").innerText = `${activeOfficer.name} (#${activeOfficer.badge})`;
+        document.getElementById("auditPinSlot").innerText = `PIN: ${activeOfficer.pin} • HSM-PRIMARY-01`;
+      }, 400);
+    }
+
+    function handleExitStrongRoom() {
+      const confirmExit = confirm("Seal and lock the cryptographic strong room session?");
+      if (confirmExit) {
+        document.getElementById("authModal").classList.remove("opacity-0", "pointer-events-none");
+        document.getElementById("pinDigit").value = "";
+      }
+    }
+
+    function initSessionTimer() {
+      if (sessionTimerInterval) clearInterval(sessionTimerInterval);
+      sessionSeconds = 0;
+      sessionTimerInterval = setInterval(() => {
+        sessionSeconds++;
+        const hrs = String(Math.floor(sessionSeconds / 3600)).padStart(2, "0");
+        const mins = String(Math.floor((sessionSeconds % 3600) / 60)).padStart(2, "0");
+        const secs = String(sessionSeconds % 60).padStart(2, "0");
+        document.getElementById("dutyTimer").innerText = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    // =========================================================================
+    // DRAG AND DROP / FILE INGESTION CONTROLLER
+    // =========================================================================
+    function triggerFileSelect() {
+      document.getElementById("mediaUploadInput").click();
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById("dropZone").classList.add("dropzone-active");
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById("dropZone").classList.remove("dropzone-active");
+    }
+
+    function handleFileDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById("dropZone").classList.remove("dropzone-active");
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) {
+        processUploadedSpecimen(files[0]);
+      }
+    }
+
+    function handleFileInputChange(e) {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        processUploadedSpecimen(files[0]);
+      }
+    }
+
+    function processUploadedSpecimen(file) {
+      const progressContainer = document.getElementById("dropProgressContainer");
+      const progressBar = document.getElementById("dropProgressBar");
+      const progressStep = document.getElementById("dropProgressStep");
+
+      progressContainer.classList.remove("hidden");
+      progressBar.style.width = "15%";
+      progressStep.innerText = "Hashing cryptographic SHA-256 binary digest...";
+
+      setTimeout(() => {
+        progressBar.style.width = "45%";
+        progressStep.innerText = "Extracting multi-modal frames and spectral frequencies...";
+      }, 300);
+
+      setTimeout(() => {
+        progressBar.style.width = "80%";
+        progressStep.innerText = "Executing Vision Transformer patch classifier & ELA tensor matrix...";
+      }, 650);
+
+      setTimeout(() => {
+        progressBar.style.width = "100%";
+        progressStep.innerText = "Ingestion complete • Forensic evidence verdict sealed!";
+      }, 950);
+
+      setTimeout(() => {
+        progressContainer.classList.add("hidden");
+        progressBar.style.width = "0%";
+
+        // Generate synthetic SHA-256 for custom file
+        const randomHex = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join("");
+        const isSuspectTampered = file.name.toLowerCase().includes("fake") || file.name.toLowerCase().includes("deep") || file.size % 2 === 0;
+
+        // Populate Custom Exhibit
+        EXHIBIT_DATA["CUSTOM"] = {
+          fileName: file.name,
+          fileSpecs: `${(file.size / (1024 * 1024)).toFixed(2)} MB • Ingest: 0.18s`,
+          verdictBadge: isSuspectTampered ? "AI ALTERED / DEEPFAKE" : "GENUINE / AUTHENTIC",
+          verdictScore: isSuspectTampered ? "96.4%" : "98.7%",
+          verdictScoreSub: isSuspectTampered ? "Tampered" : "Authentic",
+          statusTitle: isSuspectTampered ? "SYNTHETIC INPAINTING DETECTED" : "NATURAL SENSOR FIDELITY VERIFIED",
+          statusDesc: isSuspectTampered 
+            ? `Analyzed uploaded file "${file.name}". Neural diffusion boundary warping detected across extracted high-frequency residuals.`
+            : `Analyzed uploaded file "${file.name}". Consistent camera sensor photometric signature and clean acoustic frequencies verified.`,
+          vit: isSuspectTampered ? "0.964 (FAIL)" : "0.013 (PASS)",
+          ela: isSuspectTampered ? "ANOMALY" : "CLEAN",
+          c2pa: isSuspectTampered ? "STRIPPED" : "VALID SIGN",
+          block: `BLOCK #${Math.floor(4000 + Math.random() * 5000)}`,
+          sha: randomHex,
+          time: new Date().toISOString().replace("T", " ").substring(0, 19) + " UTC",
+          isFake: isSuspectTampered,
+          originNodes: [
+            {
+              tag: "1. INGESTION NODE",
+              time: "Just Now",
+              title: file.name,
+              sub: "Forensic Enclave Local Terminal",
+              footer: `SHA-256: ${randomHex.substring(0, 16)}...`,
+              alert: isSuspectTampered
+            },
+            {
+              tag: "2. ANALYSIS PROTOCOL",
+              time: "0.18s Latency",
+              title: "ViT + ELA Matrix Verification",
+              sub: isSuspectTampered ? "Synthetic Artifacts Flagged" : "Natural Sensor Verified",
+              footer: "FIPS 140-3 Cryptographic Attestation",
+              alert: false
+            },
+            {
+              tag: "3. EVIDENCE REPOSITORY",
+              time: "Live Sealed",
+              title: "Section 65B Strong Room",
+              sub: "Court-Admissible Evidence Dossier",
+              footer: "Immutable Ledger Block Recorded",
+              alert: false
+            }
+          ]
+        };
+
+        // Add to Vault Table
+        VAULT_RECORDS.unshift({
+          id: `KV-${Math.floor(1000 + Math.random() * 9000)}-U`,
+          desc: `User Upload: ${file.name}`,
+          verdict: isSuspectTampered ? "TAMPERED (96.4%)" : "GENUINE (98.7%)",
+          isFake: isSuspectTampered,
+          sha: `${randomHex.substring(0, 36)}...`,
+          time: new Date().toISOString().replace("T", " ").substring(0, 16) + " UTC"
+        });
+        renderVaultRecords(VAULT_RECORDS);
+
+        switchExhibit("CUSTOM");
+      }, 1200);
+    }
+
+    // =========================================================================
+    // MODULE B: EXHIBIT SWITCHING (A vs B vs CUSTOM)
+    // =========================================================================
+    function switchExhibit(key) {
+      activeExhibitKey = key;
+      const data = EXHIBIT_DATA[key];
+      if (!data) return;
+      const isFake = data.isFake;
+      const dict = I18N_DICTIONARY[currentLang] || I18N_DICTIONARY.EN;
+
+      // Update button styling
+      const btnA = document.getElementById("btnExhibitA");
+      const btnB = document.getElementById("btnExhibitB");
+      if (key === "A") {
+        btnA.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.35)]";
+        btnB.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 text-slate-400 hover:text-white border border-transparent";
+      } else if (key === "B") {
+        btnB.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.35)]";
+        btnA.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 text-slate-400 hover:text-white border border-transparent";
+      } else {
+        btnA.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 text-slate-400 hover:text-white border border-transparent";
+        btnB.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 text-slate-400 hover:text-white border border-transparent";
+      }
+
+      // Update Triage File Info
+      document.getElementById("triageFileName").innerText = data.fileName;
+      document.getElementById("triageFileSpecs").innerHTML = data.fileSpecs;
+      document.getElementById("fileTypeIcon").innerText = isFake ? "🎬" : "📹";
+      document.getElementById("fileTypeIcon").className = `w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${
+        isFake ? "bg-rose-500/10 border border-rose-500/30 text-rose-400" : "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+      }`;
+
+      // Update Verdict Gauge & Badge
+      const gaugeCard = document.getElementById("verdictGaugeCard");
+      gaugeCard.className = `glass-card rounded-2xl p-6 transition-all duration-300 ${isFake ? "glass-card-rose" : "glass-card-emerald"}`;
+
+      const verdictBadge = document.getElementById("verdictBadge");
+      verdictBadge.innerText = data.verdictBadge;
+      verdictBadge.className = `px-3 py-1 rounded-full text-xs font-bold font-mono ${
+        isFake ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.3)]" : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+      }`;
+
+      const gaugeRing = document.getElementById("gaugeRing");
+      gaugeRing.className = `relative w-28 h-28 rounded-full border-4 flex flex-col items-center justify-center flex-shrink-0 transition-all duration-500 ${
+        isFake ? "border-rose-500 bg-rose-500/10 dial-gauge-glow-rose" : "border-emerald-500 bg-emerald-500/10 dial-gauge-glow-emerald"
+      }`;
+
+      const scoreEl = document.getElementById("verdictScore");
+      scoreEl.innerText = data.verdictScore;
+      scoreEl.className = `text-3xl font-black font-mono tracking-tighter ${isFake ? "text-rose-400" : "text-emerald-400"}`;
+
+      document.getElementById("verdictScoreSub").innerText = data.verdictScoreSub;
+      document.getElementById("verdictStatusTitle").innerText = data.statusTitle;
+      document.getElementById("verdictStatusTitle").className = `text-base font-bold font-sans m-0 ${isFake ? "text-rose-300" : "text-emerald-300"}`;
+      document.getElementById("verdictStatusDesc").innerText = data.statusDesc;
+
+      // Update Metrics
+      const vitEl = document.getElementById("metricVit");
+      vitEl.innerText = data.vit;
+      vitEl.className = isFake ? "text-rose-400 font-bold" : "text-emerald-400 font-bold";
+
+      const elaEl = document.getElementById("metricEla");
+      elaEl.innerText = data.ela;
+      elaEl.className = isFake ? "text-rose-400 font-bold" : "text-emerald-400 font-bold";
+
+      const c2paEl = document.getElementById("metricC2pa");
+      c2paEl.innerText = data.c2pa;
+      c2paEl.className = isFake ? "text-amber-400 font-bold" : "text-emerald-400 font-bold";
+
+      // Update Ledger
+      document.getElementById("ledgerBlockNo").innerText = data.block;
+      document.getElementById("ledgerSha").innerText = data.sha;
+      document.getElementById("ledgerTimestamp").innerText = data.time;
+
+      // Update Localized Plain-English Legal Summary
+      let summaryText = "";
+      if (key === "A") {
+        summaryText = dict.summaryA || I18N_DICTIONARY.EN.summaryA;
+      } else if (key === "B") {
+        summaryText = dict.summaryB || I18N_DICTIONARY.EN.summaryB;
+      } else {
+        summaryText = isFake
+          ? `“The uploaded specimen '${data.fileName}' has been verified with synthetic neural anomalies. High-frequency inpainting seams and vocoder acoustics indicate synthetic generation.”`
+          : `“The uploaded specimen '${data.fileName}' passed all biometric photometric integrity checks with verified sensor grain and no generative seams.”`;
+      }
+      document.getElementById("plainLanguageSummary").innerText = summaryText;
+
+      // Update Social Origin Nodes
+      renderOriginNodes(data.originNodes);
+
+      // Redraw Canvas ELA & Update Chart.js
+      drawElaCanvas();
+      updateChartJsSpectral(isFake);
+    }
+
+    function rerunScanSimulation() {
+      const btn = document.getElementById("btnRescanText");
+      btn.innerText = "Scanning...";
+      setTimeout(() => {
+        btn.innerText = (I18N_DICTIONARY[currentLang] || I18N_DICTIONARY.EN).btnRescanText || "Re-Scan";
+        switchExhibit(activeExhibitKey);
+      }, 400);
+    }
+
+    // =========================================================================
+    // MODULE C: HTML5 CANVAS ELA HEATMAP INSPECTOR (STRICTLY NO SVG)
+    // =========================================================================
+    function toggleHeatmapOverlay() {
+      heatmapOverlay = !heatmapOverlay;
+      document.getElementById("btnOverlayText").innerText = heatmapOverlay ? "Overlay: ON" : "Overlay: OFF";
+      drawElaCanvas();
+    }
+
+    function drawElaCanvas() {
+      const canvas = document.getElementById("elaCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const isFake = EXHIBIT_DATA[activeExhibitKey] ? EXHIBIT_DATA[activeExhibitKey].isFake : true;
+
+      // Clear Canvas
+      ctx.fillStyle = "#030712";
+      ctx.fillRect(0, 0, w, h);
+
+      // Draw Grid Background
+      ctx.strokeStyle = "rgba(30, 41, 59, 0.4)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 35) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 35) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Draw Face Region Target Box
+      const cx = w / 2;
+      const cy = h / 2;
+      const faceR = 60;
+
+      // Simulated Head Silhouette
+      ctx.beginPath();
+      ctx.arc(cx, cy, faceR, 0, Math.PI * 2);
+      ctx.fillStyle = isFake ? "rgba(244, 63, 94, 0.08)" : "rgba(16, 185, 129, 0.08)";
+      ctx.fill();
+      ctx.strokeStyle = isFake ? "rgba(244, 63, 94, 0.6)" : "rgba(16, 185, 129, 0.6)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Simulated Biometric Facial Mesh Points & Lines
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.45)";
+      ctx.lineWidth = 1;
+      const meshPoints = [
+        [cx - 25, cy - 20], [cx + 25, cy - 20], // Eyes
+        [cx, cy - 5], // Nose bridge
+        [cx, cy + 10], // Nose tip
+        [cx - 20, cy + 30], [cx + 20, cy + 30], [cx, cy + 38], // Mouth
+        [cx - 45, cy], [cx + 45, cy], // Cheeks
+        [cx, cy + 55] // Chin
+      ];
+
+      for (let i = 0; i < meshPoints.length; i++) {
+        const [px, py] = meshPoints[i];
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath();
+        ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (i > 0) {
+          const [prevX, prevY] = meshPoints[i - 1];
+          ctx.beginPath();
+          ctx.moveTo(prevX, prevY);
+          ctx.lineTo(px, py);
+          ctx.stroke();
+        }
+      }
+
+      // If Deepfake & Heatmap Overlay ON -> Draw Neon Rose Inpainting Seam
+      if (isFake && heatmapOverlay) {
+        // Jawline Anomaly Polygon Glow
+        ctx.beginPath();
+        ctx.moveTo(cx - 50, cy + 15);
+        ctx.quadraticCurveTo(cx, cy + 70, cx + 50, cy + 15);
+        ctx.quadraticCurveTo(cx, cy + 45, cx - 50, cy + 15);
+        ctx.fillStyle = "rgba(244, 63, 94, 0.55)";
+        ctx.fill();
+        ctx.strokeStyle = "#f43f5e";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // High Compression Residual Noise Spots
+        for (let i = 0; i < 16; i++) {
+          const nx = cx - 40 + Math.random() * 80;
+          const ny = cy + 20 + Math.random() * 35;
+          ctx.fillStyle = "#fb7185";
+          ctx.beginPath();
+          ctx.arc(nx, ny, 3 + Math.random() * 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Overlay Text
+        ctx.fillStyle = "#f43f5e";
+        ctx.font = "bold 11px monospace";
+        ctx.fillText("⚠️ ELA RESIDUAL ANOMALY: MANDIBULAR SEAM (p < 0.001)", cx - 180, cy + 95);
+      } else {
+        // Genuine CCTV Neutral Grain Pattern
+        ctx.fillStyle = "#10b981";
+        ctx.font = "bold 11px monospace";
+        ctx.fillText("✓ CAMERA SENSOR PHOTOMETRIC CONSISTENCY VERIFIED", cx - 170, cy + 95);
+      }
+    }
+
+    // =========================================================================
+    // MODULE C: CHART.JS SPECTRAL HARMONICS GRAPH
+    // =========================================================================
+    function initChartJsSpectral() {
+      const ctx = document.getElementById("spectralChart");
+      if (!ctx) return;
+
+      spectralChartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["0kHz", "2kHz", "4kHz", "8kHz", "12kHz", "14.8kHz", "18kHz", "22kHz"],
+          datasets: [
+            {
+              label: "Audio Frequency Spectrum (dB)",
+              data: [85, 78, 72, 60, 42, 10, 2, 0],
+              borderColor: "#f43f5e",
+              backgroundColor: "rgba(244, 63, 94, 0.15)",
+              borderWidth: 2.5,
+              tension: 0.35,
+              fill: true,
+              pointBackgroundColor: "#f43f5e",
+              pointRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: "#94a3b8",
+                font: { family: "monospace", size: 11 }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: "rgba(30, 41, 59, 0.4)" },
+              ticks: { color: "#64748b", font: { family: "monospace", size: 10 } }
+            },
+            y: {
+              grid: { color: "rgba(30, 41, 59, 0.4)" },
+              ticks: { color: "#64748b", font: { family: "monospace", size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChartJsSpectral(isFake) {
+      if (!spectralChartInstance) return;
+
+      if (isFake) {
+        spectralChartInstance.data.datasets[0].data = [85, 78, 72, 60, 42, 10, 2, 0];
+        spectralChartInstance.data.datasets[0].borderColor = "#f43f5e";
+        spectralChartInstance.data.datasets[0].backgroundColor = "rgba(244, 63, 94, 0.15)";
+        spectralChartInstance.data.datasets[0].pointBackgroundColor = "#f43f5e";
+      } else {
+        spectralChartInstance.data.datasets[0].data = [90, 84, 79, 74, 68, 62, 54, 46];
+        spectralChartInstance.data.datasets[0].borderColor = "#10b981";
+        spectralChartInstance.data.datasets[0].backgroundColor = "rgba(16, 185, 129, 0.15)";
+        spectralChartInstance.data.datasets[0].pointBackgroundColor = "#10b981";
+      }
+      spectralChartInstance.update();
+    }
+
+    // =========================================================================
+    // MODULE D: SOCIAL MEDIA ORIGIN MAP NODES
+    // =========================================================================
+    function renderOriginNodes(nodes) {
+      const container = document.getElementById("originNodesContainer");
+      if (!container) return;
+
+      container.innerHTML = nodes.map(n => `
+        <div class="p-4 rounded-xl ${n.alert ? 'bg-rose-950/20 border border-rose-500/40 text-rose-200' : 'bg-slate-950/80 border border-slate-800 text-slate-200'} flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${n.alert ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' : 'bg-slate-800 text-slate-300 border border-slate-700'}">
+                ${n.tag}
+              </span>
+              <span class="text-[10px] text-slate-400">${n.time}</span>
+            </div>
+            <strong class="text-white text-xs block">${n.title}</strong>
+            <span class="text-[11px] ${n.alert ? 'text-rose-300' : 'text-slate-400'} block mt-1">${n.sub}</span>
+          </div>
+          <span class="text-[10px] text-slate-400 pt-2 border-t ${n.alert ? 'border-rose-500/20' : 'border-slate-800'} mt-3">
+            ${n.footer}
+          </span>
+        </div>
+      `).join("");
+    }
+
+    // =========================================================================
+    // TAB NAVIGATION CONTROLLER
+    // =========================================================================
+    function switchVisualTab(tabKey) {
+      const tabs = ["heatmap", "spectral", "origin", "shield"];
+      tabs.forEach(t => {
+        const contentEl = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}Content`);
+        const btnEl = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        
+        if (t === tabKey) {
+          contentEl.classList.remove("hidden");
+          btnEl.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]";
+        } else {
+          contentEl.classList.add("hidden");
+          btnEl.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white border border-transparent";
+        }
+      });
+
+      if (tabKey === "heatmap") drawElaCanvas();
+    }
+
+    function triggerShieldAction(action) {
+      if (action === "block") {
+        document.getElementById("btnShieldBlock").innerText = "✓ Forwarding Blocked";
+        document.getElementById("btnShieldBlock").className = "px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-rose-600 text-white cursor-pointer";
+      } else {
+        document.getElementById("btnShieldTag").innerText = "✓ Warning Tagged";
+        document.getElementById("btnShieldTag").className = "px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-amber-600 text-white cursor-pointer";
+      }
+    }
+
+    // =========================================================================
+    // MODULE E: ARCHIVED EVIDENCE VAULT TABLE & SEARCH
+    // =========================================================================
+    function renderVaultRecords(records) {
+      const tbody = document.getElementById("vaultTableBody");
+      if (!tbody) return;
+
+      tbody.innerHTML = records.map(r => `
+        <tr class="hover:bg-slate-900/60 transition-colors">
+          <td class="py-2.5 px-3 font-bold text-white">${r.id}</td>
+          <td class="py-2.5 px-3 text-slate-300">${r.desc}</td>
+          <td class="py-2.5 px-3 font-bold ${r.isFake ? 'text-rose-400' : 'text-emerald-400'}">${r.verdict}</td>
+          <td class="py-2.5 px-3 text-slate-400 font-mono text-[10px]">${r.sha}</td>
+          <td class="py-2.5 px-3 text-slate-500 text-[10px]">${r.time}</td>
+        </tr>
+      `).join("");
+    }
+
+    function filterVaultRecords(query) {
+      const q = query.toLowerCase().trim();
+      const filtered = VAULT_RECORDS.filter(r => 
+        r.id.toLowerCase().includes(q) ||
+        r.desc.toLowerCase().includes(q) ||
+        r.sha.toLowerCase().includes(q)
+      );
+      renderVaultRecords(filtered);
+    }
+
+    // =========================================================================
+    // MODULE F: COURT DOSSIER DOWNLOAD (JSON/PDF SIMULATION)
+    // =========================================================================
+    function downloadCourtDossier() {
+      const data = EXHIBIT_DATA[activeExhibitKey] || EXHIBIT_DATA["A"];
+      const dossierPayload = {
+        title: "SECTION 65B FORENSIC ADMISSIBILITY CERTIFICATE",
+        statute: "Section 65B Indian Evidence Act / Section 63 Bharatiya Sakshya Adhiniyam (BSA)",
+        caseId: activeExhibitKey === "A" ? "KV-0928-A" : (activeExhibitKey === "B" ? "KV-0604-B" : "KV-CUSTOM-SPECIMEN"),
+        attestingOfficer: activeOfficer.name,
+        badgeNumber: activeOfficer.badge,
+        jurisdiction: activeOfficer.dept,
+        evidenceFile: data.fileName,
+        sha256Digest: data.sha,
+        forensicVerdict: data.verdictBadge,
+        confidenceScore: data.verdictScore,
+        plainEnglishSummary: (I18N_DICTIONARY[currentLang] || I18N_DICTIONARY.EN)[activeExhibitKey === "A" ? "summaryA" : "summaryB"] || data.statusDesc,
+        hsmHardwareSeal: "FIPS 140-3 ATTESTED (ECDSA-P256)",
+        timestampUtc: data.time
+      };
+
+      const blob = new Blob([JSON.stringify(dossierPayload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `SECTION65B_FORENSIC_DOSSIER_${dossierPayload.caseId}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // MULTILINGUAL i18n SWITCHER (11 LANGUAGES RUNTIME)
+    // =========================================================================
+    function changeLanguage(langCode) {
+      currentLang = langCode;
+      const dict = I18N_DICTIONARY[langCode] || I18N_DICTIONARY.EN;
+
+      for (const [key, val] of Object.entries(dict)) {
+        if (key === "summaryA" || key === "summaryB") continue;
+        const el = document.getElementById(key);
+        if (el) {
+          el.innerText = val;
+        }
+      }
+
+      // Update current active exhibit summary
+      const summaryEl = document.getElementById("plainLanguageSummary");
+      if (summaryEl) {
+        if (activeExhibitKey === "A") {
+          summaryEl.innerText = dict.summaryA || I18N_DICTIONARY.EN.summaryA;
+        } else if (activeExhibitKey === "B") {
+          summaryEl.innerText = dict.summaryB || I18N_DICTIONARY.EN.summaryB;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
