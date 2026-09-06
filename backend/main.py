@@ -549,7 +549,7 @@ async def generate_dossier_endpoint(payload: Dict[str, Any]):
 
 @app.get("/api/forensics/origin-trace", response_model=OriginTraceResponse, tags=["Social Dissemination"])
 async def get_social_origin_trace(
-    phash: str = Query(..., description="Perceptual hash of suspect media for reverse vector matching")
+    phash: Optional[str] = Query("d8e1f0c2a4b89912", description="Perceptual hash of suspect media for reverse vector matching")
 ):
     """
     Performs perceptual image hash (pHash) reverse similarity lookup across monitored

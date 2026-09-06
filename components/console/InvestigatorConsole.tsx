@@ -318,11 +318,38 @@ const I18N_DICT: Record<string, Record<string, string>> = {
   },
 }
 
+const OFFICER_PROFILES: OfficerProfile[] = [
+  {
+    pin: '1947',
+    name: 'Inspector Gurpreet Singh',
+    badge: 'CP-8821',
+    dept: 'Cyber Crime Cell, Chandigarh Police',
+    avatar: '👮‍♂️',
+    role: 'CHIEF FORENSIC COMMANDER',
+  },
+  {
+    pin: '2026',
+    name: 'Sub-Inspector Ananya Sharma',
+    badge: 'PB-4474',
+    dept: 'Digital Evidence & Provenance Wing',
+    avatar: '👩‍✈️',
+    role: 'SENIOR FORENSIC INVESTIGATOR',
+  },
+  {
+    pin: '3310',
+    name: 'DSP Vikramaditya',
+    badge: 'HQ-0001',
+    dept: 'State Forensic Science Lab Directorate',
+    avatar: '🎖️',
+    role: 'EXECUTIVE COMMANDER',
+  },
+]
+
 export function InvestigatorConsole() {
   const { startLoading, stopLoading } = useLoader()
 
   // 1. Enclave Lockout & Officer State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
   const [hsmLoading, setHsmLoading] = useState<boolean>(false)
   const [pinInput, setPinInput] = useState<string>('1947')
   const [pinError, setPinError] = useState<boolean>(false)
@@ -337,6 +364,20 @@ export function InvestigatorConsole() {
     avatar: '👮‍♂️',
     role: 'CHIEF FORENSIC COMMANDER',
   })
+
+  // Check existing session
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedBadge =
+        window.sessionStorage.getItem('kavach_officer_badge') ||
+        window.localStorage.getItem('kavach-session')
+      if (savedBadge) {
+        setIsAuthenticated(true)
+        const matched = OFFICER_PROFILES.find((p) => p.badge === savedBadge)
+        if (matched) setActiveOfficer(matched)
+      }
+    }
+  }, [])
 
   // 2. Case Selection & Forensic State
   const [activeCase, setActiveCase] = useState<CasePreset>('fake')
@@ -717,8 +758,13 @@ export function InvestigatorConsole() {
       })
       const json = await res.json()
 
-      if (res.ok && json.success) {
+      if (res.ok && json.success && json.officer) {
         setActiveOfficer(json.officer)
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem('kavach_officer_badge', json.officer.badge)
+          window.sessionStorage.setItem('kavach_officer_name', json.officer.name)
+          window.localStorage.setItem('kavach-session', json.officer.badge)
+        }
         setTimeout(() => {
           setHsmLoading(false)
           setIsAuthenticated(true)
@@ -729,7 +775,14 @@ export function InvestigatorConsole() {
         setPinError(true)
       }
     } catch {
-      if (['1947', '2026', '3310'].includes(pin)) {
+      const matched = OFFICER_PROFILES.find((p) => p.pin === pin)
+      if (matched || ['1947', '2026', '3310'].includes(pin)) {
+        if (matched) setActiveOfficer(matched)
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem('kavach_officer_badge', matched?.badge || 'CP-8821')
+          window.sessionStorage.setItem('kavach_officer_name', matched?.name || 'Inspector Gurpreet Singh')
+          window.localStorage.setItem('kavach-session', matched?.badge || 'CP-8821')
+        }
         setTimeout(() => {
           setHsmLoading(false)
           setIsAuthenticated(true)
@@ -740,6 +793,17 @@ export function InvestigatorConsole() {
         setPinError(true)
       }
     }
+  }
+
+  const handleSignOut = () => {
+    sfx.playClick()
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem('kavach_officer_badge')
+      window.sessionStorage.removeItem('kavach_officer_name')
+      window.sessionStorage.removeItem('kavach_clearance_token')
+      window.localStorage.removeItem('kavach-session')
+    }
+    setIsAuthenticated(false)
   }
 
   const handleSelectOfficerChip = (profile: OfficerProfile) => {
@@ -911,6 +975,144 @@ export function InvestigatorConsole() {
 
   const lang = I18N_DICT[selectedLanguage] || I18N_DICT.EN
 
+  // 0. LOCKOUT ENCLAVE GATE IF NOT AUTHENTICATED
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#06080D] text-slate-100 flex flex-col justify-between relative overflow-hidden font-sans selection:bg-rose-500 selection:text-white">
+        {/* Ambient background glows */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
+
+        {/* Top Header */}
+        <header className="relative z-10 max-w-7xl mx-auto w-full px-6 py-5 flex items-center justify-between">
+          <Link href="/" onClick={() => sfx.playClick()} className="no-underline flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4 text-slate-400 hover:text-white transition" />
+            <span className="text-xs font-mono text-slate-400 hover:text-slate-200">Return to Home</span>
+          </Link>
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>FIPS 140-3 LEVEL 3 HARDWARE SECURITY MODULE</span>
+          </div>
+        </header>
+
+        {/* Main Lockout Form */}
+        <main className="relative z-10 max-w-md w-full mx-auto px-4 py-8">
+          <div className="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+            {/* Title & Emblem */}
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 mb-3 shadow-[0_0_25px_rgba(16,185,129,0.3)]">
+                <Shield className="w-7 h-7" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold font-sans text-white tracking-tight">
+                {lang.lockoutTitle || 'Officer Clearance Verification'}
+              </h2>
+              <p className="text-xs text-slate-400 font-mono mt-1">
+                Enter your 4-digit PIN to unlock the Forensic Enclave Workstation
+              </p>
+            </div>
+
+            {/* PIN Entry Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                handlePinSubmit(pinInput)
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-mono font-semibold text-slate-300 mb-1.5">
+                  {lang.enterPin || 'ENTER 4-DIGIT OFFICER PIN'}
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    maxLength={6}
+                    value={pinInput}
+                    onChange={(e) => {
+                      setPinInput(e.target.value)
+                      if (pinError) setPinError(false)
+                    }}
+                    placeholder="••••"
+                    className={`w-full px-4 py-3.5 rounded-xl bg-slate-950 border text-emerald-400 font-mono text-center tracking-[0.6em] text-xl focus:outline-none focus:ring-2 transition-all ${
+                      pinError
+                        ? 'border-rose-500 focus:ring-rose-500/50'
+                        : 'border-slate-800 focus:border-emerald-400 focus:ring-emerald-400/50'
+                    }`}
+                  />
+                  <Lock className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+                </div>
+              </div>
+
+              {/* Error feedback */}
+              {pinError && (
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-mono flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>Invalid Officer PIN. Please use quick-select profile below.</span>
+                </div>
+              )}
+
+              {/* Quick Select Profile Cards */}
+              <div className="pt-2">
+                <span className="text-[10px] font-mono text-slate-400 block mb-2 font-bold tracking-wider uppercase">
+                  {lang.judgeProfiles || '⚡ JUDGE DEMO QUICK-ACCESS PROFILES:'}
+                </span>
+                <div className="space-y-2">
+                  {OFFICER_PROFILES.map((profile) => (
+                    <button
+                      key={profile.pin}
+                      type="button"
+                      onClick={() => handleSelectOfficerChip(profile)}
+                      className={`w-full p-3 rounded-xl border text-left flex items-center justify-between text-xs font-mono transition-all cursor-pointer ${
+                        pinInput === profile.pin
+                          ? 'border-emerald-500/70 bg-emerald-500/15 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                          : 'border-slate-800 bg-slate-950/70 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">{profile.avatar}</span>
+                        <div>
+                          <p className="font-bold text-slate-200">{profile.name}</p>
+                          <p className="text-[10px] text-slate-400">{profile.dept} ({profile.badge})</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] px-2 py-1 rounded bg-slate-900 border border-slate-700 text-emerald-400 font-bold">
+                        PIN: {profile.pin}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={hsmLoading || !pinInput}
+                className="w-full mt-4 py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 hover:from-emerald-300 hover:to-cyan-300 text-slate-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(16,185,129,0.35)] transition-all cursor-pointer disabled:opacity-50"
+              >
+                {hsmLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-3.5 h-3.5 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
+                    <span>AUTHENTICATING HSM TOKEN...</span>
+                  </span>
+                ) : (
+                  <>
+                    <span>{lang.unlockBtn || 'UNLOCK ENCLAVE ➔'}</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="relative z-10 py-4 text-center text-[11px] font-mono text-slate-500 border-t border-slate-900">
+          <span>Kavach AI • FIPS 140-3 HSM Level 3 • Section 63 BSA Forensic Enclave</span>
+        </footer>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#080C14] text-slate-100 font-sans selection:bg-rose-500 selection:text-white">
       {/* 1. TOP HEADER & HUD STATUS BAR */}
@@ -961,13 +1163,21 @@ export function InvestigatorConsole() {
               </select>
             </div>
 
-            {/* Officer Profile Badge */}
+            {/* Officer Profile Badge & SignOut */}
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-xs">
               <span className="text-base">{activeOfficer.avatar}</span>
               <div className="text-left hidden sm:block">
                 <p className="font-semibold text-slate-200 leading-none">{activeOfficer.name}</p>
                 <p className="text-[10px] text-slate-400 font-mono mt-0.5">{activeOfficer.badge}</p>
               </div>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                title="Lock Enclave / Sign Out"
+                className="ml-1 p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5" />
+              </button>
             </div>
 
             {/* Duty Timer */}
