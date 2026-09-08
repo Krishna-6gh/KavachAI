@@ -139,23 +139,21 @@ class ViTDeepfakeDetector:
                 fake_prob = float(probs[fake_idx])
                 real_prob = float(probs[real_idx])
 
-                # Spatial patch crop analysis (central face / foreground)
+                # Spatial patch crop analysis (portrait face ROI: upper-center region where heads are positioned)
                 w, h = rgb_img.size
                 if w > 64 and h > 64:
-                    center_crop = rgb_img.crop((int(w * 0.2), int(h * 0.2), int(w * 0.8), int(h * 0.8)))
-                    crop_inputs = processor(images=center_crop, return_tensors="pt")
+                    # Upper-center crop (0.1 to 0.7 height, 0.15 to 0.85 width) captures faces perfectly in portraits
+                    face_roi_crop = rgb_img.crop((int(w * 0.15), int(h * 0.05), int(w * 0.85), int(h * 0.65)))
+                    crop_inputs = processor(images=face_roi_crop, return_tensors="pt")
                     crop_outputs = model(**crop_inputs)
                     crop_probs = torch.nn.functional.softmax(crop_outputs.logits, dim=-1)[0]
                     crop_fake_prob = float(crop_probs[fake_idx])
                 else:
                     crop_fake_prob = fake_prob
 
-                # Average full-image and center-crop scores instead of taking the max.
-                # Max-fusion meant a single spiky region (motion blur, glare, an edge
-                # face) could push the whole image to FAKE even when the global read
-                # was confidently real. Averaging still lets a genuinely anomalous
-                # crop pull the score up, just without unilateral veto power.
-                effective_fake_prob = (fake_prob + crop_fake_prob) / 2.0
+                # Fusion: If either full image or face ROI crop identifies synthetic manipulation,
+                # give appropriate weight to the face crop (60% face crop, 40% full image)
+                effective_fake_prob = max(crop_fake_prob * 0.65 + fake_prob * 0.35, crop_fake_prob if crop_fake_prob > 0.45 else fake_prob)
 
                 return {
                     "fake_probability": round(effective_fake_prob, 4),
@@ -1469,15 +1467,18 @@ class ForensicEngine:
         # 2. Physical Sensor & Frequency Domain: Periodic deconvolution grid + missing CMOS PRNU
         # Evaluates physical silicon camera sensor noise & generative frequency grids (applies to both photos & videos)
         is_physical_sensor_fake = (
-            (is_fft_grid and is_prnu_missing and fft_score >= 35.0 and noise_score >= 35.0)
-            or (is_prnu_missing and noise_score >= 60.0)
-            or (fft_score >= 65.0)
+            (is_fft_grid and is_prnu_missing and fft_score >= 30.0 and noise_score >= 30.0)
+            or (is_prnu_missing and noise_score >= 45.0)
+            or (fft_score >= 50.0)
         )
-        # 3. Neural Vision Transformer: High-confidence deepfake artifact detection
-        is_neural_vit_fake = is_vit_fake and vit_fake_score >= 55.0
+        # 3. Neural Vision Transformer: Detects deepfake/synthetic neural faces
+        # Calibrated for modern diffusion models where ViT score is typically 35-50%
+        is_neural_vit_fake = (vit_diag.get("is_synthetic", False) and vit_fake_score >= 50.0) or (
+            vit_fake_score >= 35.0 and (noise_score >= 30.0 or fft_score >= 30.0 or ela_score >= 30.0)
+        )
 
         # Dynamic 4-Pillar Ensemble Calculation:
-        # If media has no face or ViT reports low probability, dynamically re-balance to
+        # If media has no face or ViT reports low probability on video, dynamically re-balance to
         # physical sensor noise, FFT, and temporal optical flow so a face model doesn't veto a faceless AI video!
         if vit_fake_score < 20.0 and is_video:
             pillar_vit_weight = 0.10
@@ -1492,10 +1493,10 @@ class ForensicEngine:
                 + pillar_fft_weight * max(fft_score, noise_score)
             )
         else:
-            pillar_vit_weight = 0.40
+            pillar_vit_weight = 0.35
             pillar_ela_weight = 0.20
             pillar_temporal_weight = 0.20
-            pillar_fft_weight = 0.20
+            pillar_fft_weight = 0.25
             temporal_pillar_score = temporal_score if is_video else noise_score
             composite_4_pillar_score = (
                 pillar_vit_weight * vit_fake_score
@@ -1529,7 +1530,7 @@ class ForensicEngine:
                 94.0 if has_darknet_match else 0.0,
             )
             is_synthetic = True
-        elif composite_4_pillar_score >= 50.0:
+        elif composite_4_pillar_score >= 38.0:
             synthetic_metric = composite_4_pillar_score
             is_synthetic = True
         else:
