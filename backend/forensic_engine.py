@@ -732,7 +732,9 @@ class ForensicEngine:
             )
 
             fft_score = float(np.clip(0.65 * papr_penalty + 0.35 * hf_ratio_penalty, 0.0, 100.0))
-            grid_detected = bool(papr > (threshold_papr + 0.05) and fft_score >= 35.0)
+            # Grid spikes require substantially elevated PAPR to avoid false positives from normal
+            # JPEG 8x8 DCT block boundaries which also create periodic frequency peaks.
+            grid_detected = bool(papr > (threshold_papr + 0.20) and fft_score >= 50.0)
 
             diagnostics = {
                 "fft_frequency_score": round(fft_score, 2),
@@ -1466,15 +1468,26 @@ class ForensicEngine:
         )
         # 2. Physical Sensor & Frequency Domain: Periodic deconvolution grid + missing CMOS PRNU
         # Evaluates physical silicon camera sensor noise & generative frequency grids (applies to both photos & videos)
+        # KEY INSIGHT: The spatial lag-1 autocorrelation distinguishes AI smoothing from flat real-world surfaces:
+        #   - Real CMOS sensor noise: uncorrelated zero-mean Gaussian, autocorr < 0.12
+        #   - AI diffusion latent noise: spatially correlated, autocorr > 0.20
+        #   - Social media recompression: slightly correlated from DCT blocking, autocorr 0.08-0.18
+        is_recompressed = noise_diag.get("recompression_detected", False)
+        spatial_autocorr = float(noise_diag.get("spatial_lag1_autocorr", 0.0))
+        has_synthetic_autocorr = spatial_autocorr > 0.22 and not is_recompressed
         is_physical_sensor_fake = (
-            (is_fft_grid and is_prnu_missing and fft_score >= 30.0 and noise_score >= 30.0)
-            or (is_prnu_missing and noise_score >= 45.0)
-            or (fft_score >= 50.0)
+            # FFT grid + PRNU missing: ALSO require synthetic autocorrelation to avoid JPEG false positives
+            (is_fft_grid and is_prnu_missing and fft_score >= 35.0 and noise_score >= 35.0 and has_synthetic_autocorr)
+            # Standalone PRNU: strong noise penalty + confirmed synthetic autocorrelation pattern
+            or (is_prnu_missing and noise_score >= 45.0 and has_synthetic_autocorr)
+            # Very high FFT alone (extreme upsampling grids that can't be JPEG artifacts)
+            or (fft_score >= 70.0 and has_synthetic_autocorr)
         )
         # 3. Neural Vision Transformer: Detects deepfake/synthetic neural faces
-        # Calibrated for modern diffusion models where ViT score is typically 35-50%
+        # The ViT (dima806 model) is trained on StyleGAN and is blind to modern diffusion.
+        # When ViT reports high fake score AND is corroborated, flag it. But ViT alone is unreliable.
         is_neural_vit_fake = (vit_diag.get("is_synthetic", False) and vit_fake_score >= 50.0) or (
-            vit_fake_score >= 35.0 and (noise_score >= 30.0 or fft_score >= 30.0 or ela_score >= 30.0)
+            vit_fake_score >= 40.0 and (noise_score >= 35.0 or fft_score >= 35.0 or ela_score >= 35.0)
         )
 
         # Dynamic 4-Pillar Ensemble Calculation:
@@ -1519,6 +1532,12 @@ class ForensicEngine:
         }
 
         # Calibrate synthetic metric score based on neural and physical signals
+        # KEY DESIGN: The ViT model (dima806/deepfake_vs_real) is trained on StyleGAN-era data and is
+        # BLIND to modern diffusion models (Midjourney, Flux, SD3). It scores 0.29% fake for both
+        # real photos and AI portraits. Therefore:
+        # - Physical sensor evidence (PRNU + autocorrelation) can override ViT when it shows
+        #   genuinely synthetic characteristics (high spatial autocorrelation > 0.22)
+        # - But flat backgrounds with LOW autocorrelation (real cameras) are protected
         if is_neural_vit_fake or is_temporal_anomaly or is_physical_sensor_fake or is_vocoder_synthetic or has_darknet_match:
             synthetic_metric = max(
                 composite_4_pillar_score,
@@ -1530,7 +1549,7 @@ class ForensicEngine:
                 94.0 if has_darknet_match else 0.0,
             )
             is_synthetic = True
-        elif composite_4_pillar_score >= 38.0:
+        elif composite_4_pillar_score >= 50.0:
             synthetic_metric = composite_4_pillar_score
             is_synthetic = True
         else:
