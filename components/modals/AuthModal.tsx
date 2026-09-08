@@ -12,6 +12,7 @@ export interface OfficerCredentials {
   hsmKey: string
   authorityKey: string
   analystRole: string
+  name?: string
 }
 
 interface AuthModalProps {

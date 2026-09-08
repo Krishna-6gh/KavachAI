@@ -1,20 +1,87 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Check, Lock, Printer, QrCode, ShieldAlert, X } from 'lucide-react'
+import { Check, Loader2, Lock, Printer, QrCode, ShieldAlert, X } from 'lucide-react'
 
-interface DossierModalProps {
+export interface DossierModalProps {
   isOpen: boolean
   onClose: () => void
+  caseId?: string
+  fileName?: string
+  verdict?: string
+  confidenceScore?: number
+  vitLogitScore?: number
+  elaVarianceScore?: number
+  c2paStatus?: string
+  sha256Hash?: string
+  officerName?: string
+  officerBadge?: string
+  jurisdiction?: string
 }
 
-export function DossierModal({ isOpen, onClose }: DossierModalProps) {
+export function DossierModal({
+  isOpen,
+  onClose,
+  caseId = 'KV-0928-A',
+  fileName = 'media_asset_0928.mp4',
+  verdict = 'FAIL',
+  confidenceScore = 94.2,
+  vitLogitScore = 0.942,
+  elaVarianceScore = 0.88,
+  c2paStatus = 'STRIPPED',
+  sha256Hash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+  officerName = 'Inspector Gurpreet Singh',
+  officerBadge = 'CP-8821',
+  jurisdiction = 'Cyber Crime Cell, Chandigarh Police',
+}: DossierModalProps) {
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
+
   if (!isOpen) return null
 
-  const handlePrint = () => {
-    window.print()
+  const isTampered = verdict.toLowerCase().includes('fail') || verdict.toLowerCase().includes('tamper')
+
+  const handleDownloadCourtPdf = async () => {
+    setIsGeneratingPdf(true)
+    try {
+      const res = await fetch('/api/forensics/generate-court-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          case_id: caseId,
+          file_name: fileName,
+          verdict: verdict,
+          confidence_score: confidenceScore,
+          vit_logit_score: vitLogitScore,
+          ela_variance_score: elaVarianceScore,
+          c2pa_provenance_status: c2paStatus,
+          sha256_hash: sha256Hash,
+          officer_name: officerName,
+          badge_number: officerBadge,
+          jurisdiction: jurisdiction,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error(`Failed to generate PDF: ${res.statusText}`)
+      }
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `Section_63_BSA_${caseId}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Court PDF generation failed:', err)
+      alert('Unable to synthesize court PDF from server. Please verify backend connection and try again.')
+    } finally {
+      setIsGeneratingPdf(false)
+    }
   }
 
   const handleDownloadJSON = async () => {
@@ -22,15 +89,15 @@ export function DossierModal({ isOpen, onClose }: DossierModalProps) {
       const res = await fetch('/api/dossier/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId: 'KV-0928-A' }),
+        body: JSON.stringify({ caseId: caseId, officerBadge: officerBadge, jurisdiction: jurisdiction }),
       })
       const json = await res.json()
-      if (json.success && json.data) {
-        const blob = new Blob([JSON.stringify(json.data, null, 2)], { type: 'application/json' })
+      if (json.success && json.dossier) {
+        const blob = new Blob([JSON.stringify(json.dossier, null, 2)], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `SECTION65B_DOSSIER_KV-0928-A.json`
+        a.download = `SECTION63BSA_DOSSIER_${caseId}.json`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
@@ -85,13 +152,13 @@ export function DossierModal({ isOpen, onClose }: DossierModalProps) {
                 COURT-ADMISSIBLE FORENSIC DOSSIER
               </div>
               <div className="font-mono text-xs text-slate-400">
-                ISO/IEC 27037 DIGITAL EVIDENCE PRESERVATION STANDARD
+                BHARATIYA SAKSHYA ADHINIYAM, 2023 • SEC 63(4)(c) SCHEDULE CERTIFICATE
               </div>
             </div>
           </div>
 
           <div className="font-mono text-xs text-slate-400">
-            <span>CASE REF: <b className="text-cyan-400">KV-0928-A</b></span>
+            <span>CASE REF: <b className="text-cyan-400">{caseId}</b></span>
           </div>
         </div>
 
@@ -99,44 +166,48 @@ export function DossierModal({ isOpen, onClose }: DossierModalProps) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 my-6">
           {/* Left Column: Verdict & Metrics */}
           <div className="md:col-span-8 flex flex-col gap-4">
-            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <div className={`p-4 border rounded-lg ${isTampered ? 'bg-red-500/10 border-red-500/30' : 'bg-emerald-500/10 border-emerald-500/30'}`}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="font-mono text-[10px] font-bold text-[#ef4444] flex items-center gap-1">
+                <span className={`font-mono text-[10px] font-bold flex items-center gap-1 ${isTampered ? 'text-[#ef4444]' : 'text-emerald-400'}`}>
                   <ShieldAlert size={12} /> CLASSIFICATION VERDICT
                 </span>
-                <span className="px-2 py-0.5 rounded bg-red-500/20 text-[#ef4444] border border-red-500/40 text-[10px] font-mono font-bold">
-                  HIGH-CONFIDENCE TAMPERED
+                <span className={`px-2 py-0.5 rounded border text-[10px] font-mono font-bold ${
+                  isTampered ? 'bg-red-500/20 text-[#ef4444] border-red-500/40' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                }`}>
+                  {isTampered ? 'HIGH-CONFIDENCE TAMPERED' : 'AUTHENTIC SENSOR CAPTURE'}
                 </span>
               </div>
               <h3 className="text-base font-bold text-white font-sans m-0">
-                SYNTHETIC MEDIA ANOMALY DETECTED
+                {isTampered ? 'SYNTHETIC MEDIA ANOMALY DETECTED' : 'CAMERA SENSOR FIDELITY VERIFIED'}
               </h3>
               <p className="text-xs text-slate-300 mt-1 font-sans leading-relaxed m-0">
-                Neural Error Level Analysis and temporal optical flow matrices demonstrate generative diffusion manipulation along facial boundaries across 18 sampled keyframes.
+                {isTampered
+                  ? 'Neural Error Level Analysis and temporal optical flow matrices demonstrate generative diffusion manipulation along facial boundaries across sampled keyframes.'
+                  : 'Multi-spectral sensor analysis confirmed uniform photometric compression and natural continuous vocal harmonics without anomalous artifacts.'}
               </p>
             </div>
 
             <div className="border border-slate-800 bg-slate-950/60 rounded-lg font-mono text-xs">
               <div className="flex justify-between p-2.5 border-b border-slate-800">
                 <span className="text-slate-400">EVIDENCE ASSET:</span>
-                <b className="text-white">media_asset_0928.mp4 (H.264/AAC)</b>
+                <b className="text-white">{fileName}</b>
               </div>
               <div className="flex justify-between p-2.5 border-b border-slate-800">
                 <span className="text-slate-400">SHA-256 HASH:</span>
-                <code className="text-cyan-400 font-bold text-[10px]">e3b0c442...852b855</code>
+                <code className="text-cyan-400 font-bold text-[10px]">{sha256Hash.slice(0, 16)}...{sha256Hash.slice(-8)}</code>
               </div>
               <div className="flex justify-between p-2.5 border-b border-slate-800">
-                <span className="text-slate-400">SYNTHETIC PROBABILITY:</span>
-                <b className="text-red-400">94.2% (p &lt; 0.001)</b>
+                <span className="text-slate-400">{isTampered ? 'SYNTHETIC PROBABILITY:' : 'AUTHENTICITY CONFIDENCE:'}</span>
+                <b className={isTampered ? 'text-red-400' : 'text-emerald-400'}>{confidenceScore.toFixed(1)}% (p &lt; 0.001)</b>
               </div>
               <div className="flex justify-between p-2.5 border-b border-slate-800">
                 <span className="text-slate-400">C2PA MANIFEST:</span>
-                <b className="text-red-400">UNTRUSTED / STRIPPED</b>
+                <b className={c2paStatus === 'VALID' || c2paStatus.includes('VALID') ? 'text-emerald-400' : 'text-amber-400'}>{c2paStatus}</b>
               </div>
               <div className="flex justify-between p-2.5">
                 <span className="text-slate-400">CHAIN OF CUSTODY:</span>
                 <b className="text-emerald-400 flex items-center gap-1">
-                  <Check size={12} /> MERKLE BLOCK #004291 SEALED
+                  <Check size={12} /> MERKLE BLOCK SEALED (FIPS 140-3)
                 </b>
               </div>
             </div>
@@ -164,7 +235,7 @@ export function DossierModal({ isOpen, onClose }: DossierModalProps) {
               <QrCode size={36} className="text-cyan-400 flex-shrink-0" />
               <div className="font-mono text-[9px] text-slate-400">
                 <b className="text-white block">PUBLIC VERIFICATION</b>
-                Scan to verify on forensic ledger
+                Section 63 BSA Real-Time Ledger
               </div>
             </div>
           </div>
@@ -173,7 +244,7 @@ export function DossierModal({ isOpen, onClose }: DossierModalProps) {
         {/* Action Buttons */}
         <div className="flex items-center justify-between pt-4 border-t border-slate-800 flex-wrap gap-3">
           <span className="font-mono text-xs text-slate-400">
-            STATUTE: SECTION 65B INDIAN EVIDENCE ACT / SECTION 63 BSA
+            STATUTE: SECTION 63 BHARATIYA SAKSHYA ADHINIYAM (BSA), 2023
           </span>
 
           <div className="flex items-center gap-3">
@@ -193,11 +264,21 @@ export function DossierModal({ isOpen, onClose }: DossierModalProps) {
             </button>
             <button
               type="button"
-              className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-md text-xs flex items-center gap-2 cursor-pointer transition-all shadow-md"
-              onClick={handlePrint}
+              disabled={isGeneratingPdf}
+              className="bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-bold px-4 py-2 rounded-md text-xs flex items-center gap-2 cursor-pointer transition-all shadow-md active:scale-95"
+              onClick={handleDownloadCourtPdf}
             >
-              <Printer size={14} />
-              <span>PRINT / SAVE COURT PDF</span>
+              {isGeneratingPdf ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  <span>SYNTHESIZING COURT PDF...</span>
+                </>
+              ) : (
+                <>
+                  <Printer size={14} />
+                  <span>PRINT / SAVE COURT PDF</span>
+                </>
+              )}
             </button>
           </div>
         </div>

@@ -179,8 +179,29 @@ def run_tests():
     assert res.json()["robustnessScore"] >= 90
     print("[PASS] POST /api/sentinel/benchmark")
 
+    # 17. API Test: Court-Admissible Section 63 BSA PDF Generation
+    res = client.post("/api/forensics/generate-court-pdf", json={
+        "case_id": "KV-0928-A",
+        "file_name": "suspect_speech_clip.mp4",
+        "verdict": "FAIL",
+        "confidence_score": 94.2,
+        "vit_logit_score": 0.942,
+        "ela_variance_score": 0.88,
+        "c2pa_provenance_status": "STRIPPED",
+        "sha256_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "officer_name": "Inspector Gurpreet Singh",
+        "badge_number": "CP-8821",
+        "jurisdiction": "Cyber Crime Cell, Chandigarh Police",
+    })
+    assert res.status_code == 200
+    assert res.headers.get("content-type") == "application/pdf"
+    assert "Section_63_BSA" in res.headers.get("content-disposition", "")
+    assert len(res.content) > 1000
+    assert res.content.startswith(b"%PDF")
+    print(f"[PASS] POST /api/forensics/generate-court-pdf (Server-Side Court PDF: {len(res.content)} bytes)")
+
     print("\n==========================================================================")
-    print(">>> ALL 16 BACKEND FORENSIC & STATUTORY MODULE TESTS PASSED (100%) <<<")
+    print(">>> ALL 17 BACKEND FORENSIC & STATUTORY MODULE TESTS PASSED (100%) <<<")
     print("==========================================================================")
 
 

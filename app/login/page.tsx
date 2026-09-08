@@ -47,8 +47,8 @@ export default function LoginPage() {
     sfx.playScan()
 
     try {
-      // 1. Call Backend PIN verification
-      const res = await fetch('http://localhost:8000/api/auth/verify-pin', {
+      // 1. Call Backend PIN verification via Next.js proxy
+      const res = await fetch('/api/auth/verify-pin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pin: pin.trim() }),
@@ -85,7 +85,7 @@ export default function LoginPage() {
         }
 
         setTimeout(() => {
-          router.push('/dashboard')
+          router.push('/console')
         }, 800)
       } else {
         sfx.playClick()
@@ -124,7 +124,7 @@ export default function LoginPage() {
         }
 
         setTimeout(() => {
-          router.push('/dashboard')
+          router.push('/console')
         }, 800)
       } else {
         sfx.playClick()

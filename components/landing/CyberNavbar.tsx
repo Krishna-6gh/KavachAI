@@ -92,16 +92,21 @@ export function CyberNavbar({ onSignInClick }: CyberNavbarProps) {
 
         {/* Right: Security Status & Primary Console Action */}
         <div className="flex items-center gap-3.5">
-          {/* Live Defense HSM Status Badge */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] font-mono text-slate-300">
+          {/* Live Defense HSM Status Badge / Clearance Link */}
+          <Link
+            href="/console"
+            onClick={() => sfx.playClick()}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/70 hover:bg-slate-800/90 border border-slate-800 hover:border-emerald-500/40 text-[11px] font-mono text-slate-300 transition-all no-underline cursor-pointer"
+            title="Authenticate Officer Credentials (FIPS 140-3 HSM)"
+          >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span className="text-emerald-400 font-bold">FIPS 140-3 HSM</span>
             <span className="text-slate-500">|</span>
-            <span className="text-slate-400">ONLINE</span>
-          </div>
+            <span className="text-slate-400 hover:text-white">CLEARANCE</span>
+          </Link>
 
           {/* Primary CTA: Launch Investigator Console */}
           <Link

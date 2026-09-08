@@ -103,7 +103,19 @@ const Circle = forwardRef<
 
 Circle.displayName = 'Circle'
 
-export function OriginTraceDetector() {
+interface OriginTraceDetectorProps {
+  fileName?: string
+  phash?: string
+  caseId?: string
+  auditData?: any
+}
+
+export function OriginTraceDetector({
+  fileName = 'suspect_specimen.mp4',
+  phash = 'd8e1f0c2a4b89912',
+  caseId = 'KV-0928-A',
+  auditData,
+}: OriginTraceDetectorProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const div1Ref = useRef<HTMLDivElement>(null)
   const div2Ref = useRef<HTMLDivElement>(null)
@@ -114,10 +126,35 @@ export function OriginTraceDetector() {
   const div7Ref = useRef<HTMLDivElement>(null)
 
   const [selectedNode, setSelectedNode] = useState<NodeData>(nodesData.core)
+  const [liveNodes, setLiveNodes] = useState<any[]>([])
+  const [summary, setSummary] = useState<string>(
+    'Media provenance evaluated under Section 63 BSA electronic evidence chain of custody.'
+  )
+
+  React.useEffect(() => {
+    if (auditData?.propagation_vector) {
+      setLiveNodes(auditData.propagation_vector)
+      if (auditData.dissemination_summary) setSummary(auditData.dissemination_summary)
+    } else {
+      async function fetchTrace() {
+        try {
+          const res = await fetch(`/api/forensics/origin-trace?phash=${phash}&case_id=${caseId}`)
+          const json = await res.json()
+          if (json.success || json.propagation_vector) {
+            setLiveNodes(json.propagation_vector || [])
+            if (json.dissemination_summary) setSummary(json.dissemination_summary)
+          }
+        } catch {
+          // fallback
+        }
+      }
+      fetchTrace()
+    }
+  }, [phash, caseId, auditData])
 
   const handleSelect = (key: string) => {
     sfx.playClick()
-    setSelectedNode(nodesData[key])
+    setSelectedNode(nodesData[key] || nodesData.core)
   }
 
   return (

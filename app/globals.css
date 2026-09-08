@@ -53,9 +53,10 @@
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
     --color-border: var(--border);
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-display: 'Inter', 'Plus Jakarta Sans', sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-sans: 'Plus Jakarta Sans', var(--font-plus-jakarta), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Plus Jakarta Sans', var(--font-plus-jakarta), sans-serif;
+    --font-mono: 'JetBrains Mono', var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-jakarta: 'Plus Jakarta Sans', var(--font-plus-jakarta), sans-serif;
   }
 }
 
@@ -68,22 +69,33 @@ html {
   background: #030712;
   color: #f8fafc;
   scroll-behavior: smooth;
+  font-family: 'Plus Jakarta Sans', var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 body {
   margin: 0;
   background: #030712;
   color: #f8fafc;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   overflow-x: hidden;
 }
 
+.font-jakarta {
+  font-family: 'Plus Jakarta Sans', var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 h1, h2, h3, h4, h5, h6, .hero-headline, .brand-name {
-  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: #ffffff;
 }
 
@@ -94,7 +106,8 @@ code, pre, .font-mono, .section-kicker, .overline, .hero-meta,
 .orbit-caption, .contract-items, .hash, .hash-val, .hash-block code,
 .block-number, .merkle-root, .timestamp, .telemetry-val, .telemetry-tag,
 .telemetry-status, .ticker-value, .ticker-label, .proof-hash, .status-dot-text {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'JetBrains Mono', var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: 'tnum', 'zero';
 }
 
 button {
@@ -439,33 +452,30 @@ button {
 }
 
 /* ==========================================================================
-   Investigator Console — instrument panel craft
+   Investigator Console — premium aurora workspace
    ========================================================================== */
 
 .ic-shell {
-  --ic-bg: #080a0e;
-  --ic-surface: #0e1218;
-  --ic-raised: #141a22;
-  --ic-line: #1e2632;
-  --ic-line-strong: #2a3444;
-  --ic-ink: #e6e9ef;
-  --ic-mute: #7d8796;
-  --ic-faint: #4a5565;
-  --ic-accent: #2ec4b6;
-  --ic-accent-dim: rgba(46, 196, 182, 0.14);
-  --ic-threat: #d45a5a;
-  --ic-threat-dim: rgba(212, 90, 90, 0.12);
-  --ic-ok: #3cba8c;
-  --ic-ok-dim: rgba(60, 186, 140, 0.12);
-  --ic-warn: #c9923a;
+  --ic-ink: #f4f1ff;
+  --ic-mute: #a8a3c7;
+  --ic-faint: #6e6890;
+  --ic-cyan: #67e8f9;
+  --ic-violet: #c4b5fd;
+  --ic-rose: #fb7185;
+  --ic-amber: #fbbf24;
+  --ic-emerald: #34d399;
   position: relative;
+  isolation: isolate;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(46, 196, 182, 0.06), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212, 90, 90, 0.04), transparent 50%),
-    var(--ic-bg);
+  overflow-x: hidden;
   color: var(--ic-ink);
-  font-family: 'Outfit', 'Space Grotesk', system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 8% -10%, rgba(109, 40, 217, 0.38), transparent 55%),
+    radial-gradient(900px 500px at 92% 8%, rgba(14, 165, 233, 0.22), transparent 50%),
+    radial-gradient(800px 520px at 70% 100%, rgba(244, 63, 94, 0.16), transparent 52%),
+    radial-gradient(700px 420px at 20% 90%, rgba(16, 185, 129, 0.12), transparent 50%),
+    #07060f;
+  font-family: 'Plus Jakarta Sans', var(--font-plus-jakarta), sans-serif;
 }
 
 .ic-shell::before {
@@ -474,8 +484,12 @@ button {
   position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.45;
+  background-image:
+    linear-gradient(rgba(196, 181, 253, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 35%, transparent 78%);
 }
 
 .ic-shell > * {
@@ -483,69 +497,181 @@ button {
   z-index: 1;
 }
 
-.ic-panel {
-  background: linear-gradient(165deg, rgba(20, 26, 34, 0.92), rgba(14, 18, 24, 0.96));
-  border: 1px solid var(--ic-line);
-  border-radius: 10px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+.ic-orb {
+  position: fixed;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+  animation: ic-orb-drift 18s ease-in-out infinite alternate;
 }
 
-.ic-panel-threat {
-  border-color: rgba(212, 90, 90, 0.35);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(212, 90, 90, 0.08);
+.ic-orb-a {
+  width: 380px;
+  height: 380px;
+  top: -80px;
+  left: -60px;
+  background: rgba(139, 92, 246, 0.35);
 }
 
-.ic-panel-ok {
-  border-color: rgba(60, 186, 140, 0.35);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(60, 186, 140, 0.08);
+.ic-orb-b {
+  width: 320px;
+  height: 320px;
+  top: 18%;
+  right: -80px;
+  background: rgba(34, 211, 238, 0.22);
+  animation-delay: -6s;
+}
+
+.ic-orb-c {
+  width: 280px;
+  height: 280px;
+  bottom: -40px;
+  left: 28%;
+  background: rgba(244, 63, 94, 0.16);
+  animation-delay: -11s;
+}
+
+@keyframes ic-orb-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(40px, 28px, 0) scale(1.12); }
+}
+
+.ic-display {
+  font-family: 'Outfit', 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.04em;
+  font-weight: 700;
 }
 
 .ic-kicker {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ic-mute);
+  color: var(--ic-violet);
 }
 
-.ic-pin-cell {
-  width: 52px;
-  height: 58px;
-  display: flex;
+.ic-glass {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025));
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 18px 50px rgba(5, 4, 16, 0.35);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s, box-shadow 0.35s;
+}
+
+.ic-glass:hover {
+  transform: translateY(-5px);
+  border-color: rgba(196, 181, 253, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 24px 60px rgba(5, 4, 16, 0.45),
+    0 0 40px rgba(103, 232, 249, 0.08);
+}
+
+.ic-glass-static:hover {
+  transform: none;
+}
+
+.ic-glass-threat {
+  border-color: rgba(251, 113, 133, 0.35);
+  background: linear-gradient(180deg, rgba(251, 113, 133, 0.12), rgba(255, 255, 255, 0.03));
+}
+
+.ic-glass-ok {
+  border-color: rgba(52, 211, 153, 0.35);
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.12), rgba(255, 255, 255, 0.03));
+}
+
+.ic-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  border: 1px solid var(--ic-line-strong);
-  background: var(--ic-surface);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 22px;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10px;
   font-weight: 700;
-  color: var(--ic-accent);
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 7, 18, 0.45);
+  transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
 }
 
-.ic-pin-cell.filled {
-  border-color: rgba(46, 196, 182, 0.45);
-  background: var(--ic-accent-dim);
+.ic-chip:hover {
+  transform: translateY(-1px) scale(1.02);
 }
 
-.ic-pin-cell.active {
-  border-color: var(--ic-accent);
-  box-shadow: 0 0 0 3px var(--ic-accent-dim);
+.ic-nav {
+  background: rgba(10, 8, 22, 0.62);
+  backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.ic-pin-cell.error {
-  border-color: rgba(212, 90, 90, 0.55);
-  animation: ic-shake 0.4s ease;
+.ic-dropzone {
+  border: 1px dashed rgba(196, 181, 253, 0.38);
+  background:
+    linear-gradient(180deg, rgba(103, 232, 249, 0.08), transparent 48%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s, background 0.3s;
 }
 
-@keyframes ic-shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(3px); }
+.ic-dropzone:hover,
+.ic-dropzone.drag {
+  border-color: rgba(103, 232, 249, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 50px rgba(14, 165, 233, 0.12);
+  background:
+    linear-gradient(180deg, rgba(103, 232, 249, 0.14), transparent 50%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+}
+
+.ic-stat {
+  padding: 16px 18px;
+  border-radius: 18px;
+  min-height: 96px;
+}
+
+.ic-stat:hover .ic-stat-value {
+  color: #fff;
+}
+
+.ic-stat-value {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.04em;
+  transition: color 0.25s;
+}
+
+.ic-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ic-mute);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  transition: color 0.2s, background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.ic-tab:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
+}
+
+.ic-tab.active {
+  color: #081016;
+  background: linear-gradient(135deg, #67e8f9, #c4b5fd);
+  box-shadow: 0 8px 24px rgba(103, 232, 249, 0.25);
 }
 
 .ic-scan-frame {
@@ -558,22 +684,22 @@ button {
   position: absolute;
   width: 18px;
   height: 18px;
-  border-color: var(--ic-accent);
+  border-color: #67e8f9;
   border-style: solid;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .ic-scan-frame::before {
-  top: 8px;
-  left: 8px;
+  top: 10px;
+  left: 10px;
   border-width: 1.5px 0 0 1.5px;
 }
 
 .ic-scan-frame::after {
-  bottom: 8px;
-  right: 8px;
+  bottom: 10px;
+  right: 10px;
   border-width: 0 1.5px 1.5px 0;
 }
 
@@ -591,8 +717,8 @@ button {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--ic-accent), transparent);
-  box-shadow: 0 0 12px rgba(46, 196, 182, 0.45);
+  background: linear-gradient(90deg, transparent, #67e8f9, transparent);
+  box-shadow: 0 0 16px rgba(103, 232, 249, 0.55);
   animation: ic-sweep 2.8s ease-in-out infinite;
 }
 
@@ -603,91 +729,9 @@ button {
   100% { top: 100%; opacity: 0; }
 }
 
-.ic-gauge-ring {
-  transform: rotate(-90deg);
-}
-
-.ic-gauge-track {
-  fill: none;
-  stroke: var(--ic-line-strong);
-  stroke-width: 6;
-}
-
-.ic-gauge-progress {
-  fill: none;
-  stroke-width: 6;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.4s;
-}
-
-.ic-lcd {
-  font-family: 'JetBrains Mono', monospace;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-}
-
-.ic-tab-rail {
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  background: var(--ic-surface);
-  border: 1px solid var(--ic-line);
-  border-radius: 8px;
-}
-
-.ic-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  color: var(--ic-mute);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  transition: color 0.2s, background 0.2s;
-}
-
-.ic-tab:hover {
-  color: var(--ic-ink);
-}
-
-.ic-tab.active {
-  background: var(--ic-raised);
-  color: var(--ic-accent);
-  box-shadow: inset 0 0 0 1px rgba(46, 196, 182, 0.25);
-}
-
-.ic-timeline-line {
-  position: absolute;
-  left: 7px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--ic-accent), var(--ic-line));
-}
-
-.ic-dropzone {
-  border: 1px dashed rgba(46, 196, 182, 0.28);
-  background:
-    linear-gradient(180deg, rgba(46, 196, 182, 0.03), transparent 40%),
-    var(--ic-surface);
-  transition: border-color 0.25s, background 0.25s, transform 0.25s;
-}
-
-.ic-dropzone:hover,
-.ic-dropzone.drag {
-  border-color: rgba(46, 196, 182, 0.55);
-  background:
-    linear-gradient(180deg, rgba(46, 196, 182, 0.07), transparent 45%),
-    var(--ic-raised);
-}
-
 .ic-bar {
   transform-origin: bottom;
-  animation: ic-bar-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: ic-bar-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes ic-bar-rise {
@@ -695,26 +739,229 @@ button {
   to { transform: scaleY(1); opacity: 1; }
 }
 
-.ic-row-enter {
-  animation: ic-fade-up 0.45s ease both;
+.ic-origin-card {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.28s, background 0.28s;
 }
 
-@keyframes ic-fade-up {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.ic-origin-card:hover {
+  transform: translateX(6px);
+  border-color: rgba(196, 181, 253, 0.45);
 }
 
-.ic-auth-veil {
-  background:
-    radial-gradient(ellipse at center, rgba(14, 18, 24, 0.92), rgba(8, 10, 14, 0.97)),
-    var(--ic-bg);
-  backdrop-filter: blur(12px);
+.ic-vault-row {
+  transition: background 0.2s, transform 0.2s;
 }
 
 .ic-vault-row:hover {
-  background: rgba(46, 196, 182, 0.04);
+  background: rgba(196, 181, 253, 0.08);
+  transform: scale(1.005);
 }
 
-.ic-mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+.ic-btn-primary {
+  background: linear-gradient(135deg, #fb7185 0%, #c084fc 52%, #67e8f9 100%);
+  background-size: 160% 160%;
+  animation: ic-gradient-shift 7s ease infinite;
+  color: #0b0614;
+  box-shadow: 0 12px 32px rgba(192, 132, 252, 0.28);
+  transition: transform 0.25s, filter 0.25s;
+}
+
+.ic-btn-primary:hover {
+  transform: translateY(-2px) scale(1.01);
+  filter: brightness(1.06);
+}
+
+@keyframes ic-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ic-profile {
+  transition: transform 0.25s, border-color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+
+.ic-profile:hover {
+  transform: translateY(-3px);
+  border-color: rgba(103, 232, 249, 0.45);
+  box-shadow: 0 14px 30px rgba(14, 165, 233, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ic-orb,
+  .ic-scan-sweep::after,
+  .ic-bar,
+  .ic-btn-primary {
+    animation: none !important;
+  }
+  .ic-glass:hover,
+  .ic-dropzone:hover,
+  .ic-tab:hover,
+  .ic-origin-card:hover,
+  .ic-vault-row:hover,
+  .ic-profile:hover,
+  .ic-btn-primary:hover {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   Tactical Cyber Animations & Ambient Effects
+   ========================================================================== */
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.25), inset 0 0 15px rgba(6, 182, 212, 0.1);
+    border-color: rgba(6, 182, 212, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(6, 182, 212, 0.65), inset 0 0 25px rgba(6, 182, 212, 0.25);
+    border-color: rgba(6, 182, 212, 0.9);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.5s infinite ease-in-out;
+}
+
+@keyframes scan-laser {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scan-laser {
+  animation: scan-laser 2.2s infinite ease-in-out;
+}
+
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-radar-spin {
+  animation: radar-spin 4s linear infinite;
+}
+
+/* ==========================================================================
+   Tactical High-Contrast Thick Glowing Border System
+   ========================================================================== */
+
+.panel-glow-cyan {
+  border: 2px solid rgba(6, 182, 212, 0.85) !important;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.35), inset 0 0 15px rgba(6, 182, 212, 0.08) !important;
+}
+
+.panel-glow-indigo {
+  border: 2px solid rgba(129, 140, 248, 0.85) !important;
+  box-shadow: 0 0 25px rgba(129, 140, 248, 0.35), inset 0 0 15px rgba(129, 140, 248, 0.08) !important;
+}
+
+.panel-glow-emerald {
+  border: 2px solid rgba(16, 185, 129, 0.85) !important;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.35), inset 0 0 15px rgba(16, 185, 129, 0.08) !important;
+}
+
+.panel-glow-rose {
+  border: 2px solid rgba(244, 63, 94, 0.9) !important;
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.4), inset 0 0 15px rgba(244, 63, 94, 0.1) !important;
+}
+
+.panel-glow-amber {
+  border: 2px solid rgba(245, 158, 11, 0.85) !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.35), inset 0 0 15px rgba(245, 158, 11, 0.08) !important;
+}
+
+.panel-glow-sky {
+  border: 2px solid rgba(56, 189, 248, 0.85) !important;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.35), inset 0 0 15px rgba(56, 189, 248, 0.08) !important;
+}
+
+.panel-glow-purple {
+  border: 2px solid rgba(192, 132, 252, 0.85) !important;
+  box-shadow: 0 0 30px rgba(192, 132, 252, 0.35), inset 0 0 15px rgba(192, 132, 252, 0.08) !important;
+}
+
+/* ==========================================================================
+   Section 63 BSA & Section 65B IEA Legal Print Engine Stylesheet
+   ========================================================================== */
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: 'Times New Roman', Times, serif, 'Plus Jakarta Sans', sans-serif !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide entire interactive dashboard UI */
+  .no-print,
+  header,
+  nav,
+  .ic-orb,
+  .ic-scan-sweep,
+  .ic-dropzone,
+  .interactive-deck,
+  button:not(.print-include) {
+    display: none !important;
+  }
+
+  /* Ensure printable dossier fills A4 page cleanly */
+  .dossier-print-container {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .dossier-print-container * {
+    color: #000000 !important;
+    background: transparent !important;
+    border-color: #333333 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .dossier-print-container table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .dossier-print-container th,
+  .dossier-print-container td {
+    border: 1px solid #333333 !important;
+    padding: 6px 10px !important;
+    font-size: 11pt !important;
+  }
+
+  .dossier-print-container th {
+    background-color: #f1f5f9 !important;
+    font-weight: bold !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 15mm 15mm;
+  }
 }

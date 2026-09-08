@@ -36,12 +36,13 @@ export async function POST(req: Request) {
     const { key = '' } = body
     const normalizedKey = key.trim().toUpperCase()
 
-    // 1. Attempt FastAPI proxy
+    // 1. Attempt FastAPI proxy (with strict 250ms timeout)
     try {
       const fastRes = await fetch(`${FASTAPI_URL}/api/auth/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: normalizedKey }),
+        signal: AbortSignal.timeout(250),
       })
       if (fastRes.ok) {
         const data = await fastRes.json()

@@ -545,6 +545,17 @@ export default function Dashboard() {
           <DossierModal
             isOpen={dossierOpen}
             onClose={() => setDossierOpen(false)}
+            caseId={selectedCase?.id || 'KV-0928-A'}
+            fileName={fileName || selectedCase?.asset || 'media_asset_0928.mp4'}
+            verdict={activeVerdict}
+            confidenceScore={auditData?.confidence_score ?? 94.2}
+            vitLogitScore={auditData?.vit_logit_score ?? 0.942}
+            elaVarianceScore={auditData?.ela_variance_score ?? 0.88}
+            c2paStatus={auditData?.c2pa_provenance_status ?? 'STRIPPED'}
+            sha256Hash={auditData?.hashes?.sha256 ?? 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'}
+            officerName={officer?.name || 'Inspector Gurpreet Singh'}
+            officerBadge={officer?.badge || 'CP-8821'}
+            jurisdiction={officer?.jurisdiction || 'Cyber Crime Cell, Chandigarh Police'}
           />
         )}
       </AnimatePresence>

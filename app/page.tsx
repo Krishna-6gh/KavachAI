@@ -38,7 +38,7 @@ export default function Home() {
     sfx.playSeal()
     setSession(credentials.badge)
     setLoginOpen(false)
-    router.push('/dashboard')
+    router.push('/console')
   }
 
   const handleSignOut = () => {

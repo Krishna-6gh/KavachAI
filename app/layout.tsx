@@ -1,7 +1,29 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Plus_Jakarta_Sans, JetBrains_Mono, Inter } from 'next/font/google'
 import './globals.css'
 import { AppProviders } from '@/components/AppProviders'
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta',
+  display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'KavachAI — Forensic Intelligence & Cryptographic Media Verification',
@@ -31,16 +53,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} ${inter.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased font-sans">
         <AppProviders>
           {children}
         </AppProviders>
